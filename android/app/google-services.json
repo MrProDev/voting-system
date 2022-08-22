@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "889188494167",
+    "project_id": "pakistan-voting-system",
+    "storage_bucket": "pakistan-voting-system.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889188494167:android:a4fab16090e22c0ed02c12",
+        "android_client_info": {
+          "package_name": "com.example.voting_system"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889188494167-s4oo29hh5kec8srj19nu4fhb6e48fjf5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgW-QLaxYL3YH97FqGSmIWq4W_QlxphgI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889188494167-s4oo29hh5kec8srj19nu4fhb6e48fjf5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
