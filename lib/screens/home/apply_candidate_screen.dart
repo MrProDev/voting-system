@@ -196,6 +196,22 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
     setState(() {
       _loading = true;
     });
+
+    final result = await apply.checkIfDocExists();
+    if (result == true) {
+      _showAlertDialog('You have already applied for a candidate');
+      setState(() {
+        _loading = false;
+      });
+      return;
+    } else if (result == null) {
+      _showAlertDialog('An error occurred');
+      setState(() {
+        _loading = false;
+      });
+      return;
+    }
+
     await apply.applyForCandidate(partyName: _partyName!, image: _image!);
     setState(() {
       _loading = false;

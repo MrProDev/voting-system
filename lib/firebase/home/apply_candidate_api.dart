@@ -8,47 +8,43 @@ import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/models/user_data.dart';
 
 class ApplyCandidateApi {
-  Future applyForCandidate(
-      {required String partyName, required File image}) async {
+  String getUid() => FirebaseAuth.instance.currentUser!.uid;
+
+  Future applyForCandidate({
+    required String partyName,
+    required File image,
+  }) async {
     final userdoc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(getCurrentUid())
+        .doc(getUid())
         .get();
 
     UserData userData = UserData.fromJson(userdoc.data());
 
     userData.userType = 'candidate';
 
-    String? constituency = userData.constituency;
-
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(getCurrentUid())
-        .set(
+    await FirebaseFirestore.instance.collection('users').doc(getUid()).set(
           userData.toJson(),
         );
+
+    String? constituency = userData.constituency;
 
     String? imageUrl = await uploadPartyImage(image: image);
 
     CandidateData candidateData = CandidateData(
-      uid: getCurrentUid(),
       partyName: partyName,
       imageUrl: imageUrl,
       constituency: constituency,
+      isApproved: false,
     );
 
     try {
-      final doc = FirebaseFirestore.instance
-          .collection('candidates')
-          .doc(getCurrentUid());
+      final doc =
+          FirebaseFirestore.instance.collection('candidates').doc(getUid());
       await doc.set(candidateData.toJson());
     } on PlatformException {
       return null;
     }
-  }
-
-  String getCurrentUid() {
-    return FirebaseAuth.instance.currentUser!.uid;
   }
 
   Future<String?> uploadPartyImage({required File image}) async {
@@ -56,7 +52,7 @@ class ApplyCandidateApi {
       final ref = FirebaseStorage.instance
           .ref()
           .child('candidate_party_images')
-          .child('${getCurrentUid()}_party.jpg');
+          .child('${getUid()}_party.jpg');
       await ref.putFile(image);
       return await ref.getDownloadURL();
     } on PlatformException {
@@ -68,11 +64,24 @@ class ApplyCandidateApi {
     try {
       return await FirebaseFirestore.instance
           .collection('candidates')
-          .doc(getCurrentUid())
+          .doc(getUid())
           .get()
           .then(
             (value) => value.data()?['constituency'],
           );
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  Future checkIfDocExists() async {
+    try {
+      final doc = await FirebaseFirestore.instance
+          .collection('candidates')
+          .doc(getUid())
+          .get();
+
+      return doc.exists;
     } on PlatformException {
       return null;
     }

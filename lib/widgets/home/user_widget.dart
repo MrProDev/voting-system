@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class UsersWidget extends StatelessWidget {
-  const UsersWidget({
+class UserWidget extends StatelessWidget {
+  const UserWidget({
     Key? key,
     required this.name,
     required this.constituency,
@@ -26,6 +26,7 @@ class UsersWidget extends StatelessWidget {
         leading: CircleAvatar(
           backgroundColor: CupertinoColors.systemPink,
           backgroundImage: NetworkImage(imageUrl),
+          radius: 28,
         ),
         title: Text(
           name,
