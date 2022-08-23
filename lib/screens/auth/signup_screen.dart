@@ -43,7 +43,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       final image = await ImagePicker().pickImage(
         source: source,
-        imageQuality: 25,
         maxWidth: 150,
         maxHeight: 150,
       );

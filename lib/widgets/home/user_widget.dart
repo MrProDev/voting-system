@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class UserWidget extends StatelessWidget {
@@ -24,7 +23,6 @@ class UserWidget extends StatelessWidget {
     return Material(
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: CupertinoColors.systemPink,
           backgroundImage: NetworkImage(imageUrl),
           radius: 28,
         ),

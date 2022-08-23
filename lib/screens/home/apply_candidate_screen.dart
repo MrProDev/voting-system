@@ -66,11 +66,11 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(80.0),
                       child: _image == null
-                          ? 
-                              const Icon(
-                                CupertinoIcons.person_alt_circle,
-                                size: 128,
-                              
+                          ? Icon(
+                              CupertinoIcons.person_alt_circle,
+                              size: 128,
+                              color:
+                                  CupertinoColors.systemBlue.withOpacity(0.5),
                             )
                           : Image.file(
                               _image!,
@@ -89,7 +89,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: CupertinoColors.systemPink,
+                          color: CupertinoColors.systemBlue,
                         ),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(
@@ -112,9 +112,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
                     textCapitalization: TextCapitalization.words,
                     enableSuggestions: false,
                     textInputAction: TextInputAction.done,
-                    prefix: 
-                    const   Icon(Icons.celebration_outlined),
-                    
+                    prefix: const Icon(Icons.celebration_outlined),
                     placeholder: 'Party Name',
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -135,18 +133,9 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 12),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      CupertinoColors.systemPurple,
-                      CupertinoColors.systemPink,
-                      CupertinoColors.systemYellow,
-                    ],
-                  ),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: CupertinoButton(
+                child: CupertinoButton.filled(
                   padding: EdgeInsets.zero,
                   onPressed: _verifyCredentials,
                   child: _loading

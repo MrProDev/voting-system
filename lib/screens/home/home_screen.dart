@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
-import 'package:voting_system/widgets/home/home_widget.dart';
-import 'package:voting_system/widgets/home/profile_widget.dart';
+import 'package:voting_system/widgets/home/home_tab_widget.dart';
+import 'package:voting_system/widgets/home/profile_tab_widget.dart';
+import 'package:voting_system/widgets/home/vote_tab_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -20,6 +21,10 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
+            icon: Icon(CupertinoIcons.hand_thumbsup_fill),
+            label: 'Vote',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person),
             label: 'Profile',
           ),
@@ -28,9 +33,11 @@ class _HomeScreenState extends State<HomeScreen> {
       tabBuilder: (context, index) {
         switch (index) {
           case 0:
-            return const HomeWidget();
+            return const HomeTabWidget();
+          case 1:
+            return const VoteTabWidget();
           default:
-            return const ProfileWidget();
+            return const ProfileTabWidget();
         }
       },
     );
