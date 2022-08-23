@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/home/apply_candidate_api.dart';
-import 'package:voting_system/widgets/shader_mask_widget.dart';
 
 class ApplyCandidateScreen extends StatefulWidget {
   const ApplyCandidateScreen({Key? key}) : super(key: key);
@@ -67,11 +66,11 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(80.0),
                       child: _image == null
-                          ? const ShaderMaskWidget(
-                              child: Icon(
+                          ? 
+                              const Icon(
                                 CupertinoIcons.person_alt_circle,
                                 size: 128,
-                              ),
+                              
                             )
                           : Image.file(
                               _image!,
@@ -113,9 +112,9 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
                     textCapitalization: TextCapitalization.words,
                     enableSuggestions: false,
                     textInputAction: TextInputAction.done,
-                    prefix: const ShaderMaskWidget(
-                      child: Icon(Icons.celebration_outlined),
-                    ),
+                    prefix: 
+                    const   Icon(Icons.celebration_outlined),
+                    
                     placeholder: 'Party Name',
                     validator: (value) {
                       if (value!.isEmpty) {

@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/common/common_data.dart';
 import 'package:voting_system/firebase/auth/signup_auth_api.dart';
-import 'package:voting_system/widgets/shader_mask_widget.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -81,11 +80,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(80.0),
                       child: image == null
-                          ? const ShaderMaskWidget(
-                              child: Icon(
-                                CupertinoIcons.person_alt_circle,
-                                size: 128,
-                              ),
+                          ? Icon(
+                              CupertinoIcons.person_alt_circle,
+                              color:
+                                  CupertinoColors.systemBlue.withOpacity(0.5),
+                              size: 128,
                             )
                           : Image.file(
                               image!,
@@ -104,7 +103,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
-                          color: CupertinoColors.systemPink,
+                          color: CupertinoColors.systemBlue,
                         ),
                         padding: const EdgeInsets.all(8),
                         child: const Icon(
@@ -120,7 +119,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ? const Text(
                       'Please choose your profile picture',
                       style: TextStyle(
-                        color: CupertinoColors.systemRed,
+                        color: CupertinoDynamicColor.withBrightness(
+                          color: CupertinoColors.black,
+                          darkColor: CupertinoColors.white,
+                        ),
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                       ),
@@ -136,9 +138,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     textCapitalization: TextCapitalization.words,
                     enableSuggestions: false,
                     textInputAction: TextInputAction.next,
-                    prefix: const ShaderMaskWidget(
-                      child: Icon(CupertinoIcons.profile_circled),
-                    ),
+                    prefix: const Icon(CupertinoIcons.profile_circled),
                     placeholder: 'Name',
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -156,15 +156,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       padding: EdgeInsets.zero,
                       child: Row(
                         children: [
-                          const ShaderMaskWidget(
-                            child: Icon(Icons.where_to_vote_outlined),
-                          ),
+                          const Icon(Icons.where_to_vote_outlined),
                           Container(
                             margin: const EdgeInsets.only(left: 5),
-                            child: ShaderMaskWidget(
-                              child: Text(CommonData
-                                  .constituencies[_selectedConstituency]),
-                            ),
+                            child: Text(CommonData
+                                .constituencies[_selectedConstituency]),
                           ),
                         ],
                       ),
@@ -193,9 +189,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     textCapitalization: TextCapitalization.none,
                     enableSuggestions: false,
                     textInputAction: TextInputAction.next,
-                    prefix: const ShaderMaskWidget(
-                      child: Icon(Icons.numbers_outlined),
-                    ),
+                    prefix: const Icon(Icons.numbers_outlined),
                     placeholder: 'CNIC',
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -215,9 +209,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     enableSuggestions: false,
                     keyboardType: TextInputType.emailAddress,
                     textInputAction: TextInputAction.next,
-                    prefix: const ShaderMaskWidget(
-                      child: Icon(CupertinoIcons.mail),
-                    ),
+                    prefix: const Icon(CupertinoIcons.mail),
                     placeholder: 'Email Address',
                     validator: (value) {
                       if (value!.isEmpty) {
@@ -232,9 +224,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   CupertinoTextFormFieldRow(
-                    prefix: const ShaderMaskWidget(
-                      child: Icon(CupertinoIcons.lock),
-                    ),
+                    prefix: const Icon(CupertinoIcons.lock),
                     placeholder: 'Password',
                     obscureText: true,
                     controller: _passwordController,
@@ -251,9 +241,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   CupertinoTextFormFieldRow(
-                    prefix: const ShaderMaskWidget(
-                      child: Icon(CupertinoIcons.lock),
-                    ),
+                    prefix: const Icon(CupertinoIcons.lock),
                     placeholder: 'Confirm Password',
                     obscureText: true,
                     controller: _confirmPasswordController,
@@ -271,18 +259,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      CupertinoColors.systemPurple,
-                      CupertinoColors.systemPink,
-                      CupertinoColors.systemYellow,
-                    ],
-                  ),
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: CupertinoButton(
+                child: CupertinoButton.filled(
                   padding: EdgeInsets.zero,
                   onPressed: _verifyCredentials,
                   child: _loading
@@ -295,11 +274,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ),
                 ),
               ),
-              ShaderMaskWidget(
-                child: CupertinoButton(
-                  child: const Text('Already have an account?'),
-                  onPressed: () => Navigator.pop(context),
-                ),
+              CupertinoButton(
+                child: const Text('Already have an account?'),
+                onPressed: () => Navigator.pop(context),
               ),
             ],
           ),

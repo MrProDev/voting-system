@@ -8,6 +8,7 @@ import 'package:voting_system/firebase/auth/signup_auth_api.dart';
 import 'package:voting_system/firebase/auth/verify_email_api.dart';
 import 'package:voting_system/firebase/home/apply_candidate_api.dart';
 import 'package:voting_system/firebase/home/show_users_api.dart';
+import 'package:voting_system/firebase/profile/profile_api.dart';
 import 'package:voting_system/firebase_options.dart';
 import 'package:voting_system/screens/auth/forgot_password_screen.dart';
 import 'package:voting_system/screens/auth/login_screen.dart';
@@ -50,15 +51,18 @@ class VotingSystem extends StatelessWidget {
         Provider<ShowUsersApi>(
           create: (_) => ShowUsersApi(),
         ),
+        Provider<ProfileApi>(
+          create: (_) => ProfileApi(),
+        ),
       ],
       child: CupertinoApp(
         theme: const CupertinoThemeData(
           barBackgroundColor: CupertinoDynamicColor.withBrightness(
-            color: CupertinoColors.lightBackgroundGray,
+            color: CupertinoColors.white,
             darkColor: CupertinoColors.black,
           ),
           scaffoldBackgroundColor: CupertinoDynamicColor.withBrightness(
-            color: CupertinoColors.lightBackgroundGray,
+            color: CupertinoColors.extraLightBackgroundGray,
             darkColor: CupertinoColors.black,
           ),
         ),

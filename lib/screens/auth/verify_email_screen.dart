@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/auth/login_auth_api.dart';
 import 'package:voting_system/firebase/auth/verify_email_api.dart';
 import 'package:voting_system/screens/home/home_screen.dart';
-import 'package:voting_system/widgets/app_icon_widget.dart';
-import 'package:voting_system/widgets/shader_mask_widget.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
   const VerifyEmailScreen({Key? key}) : super(key: key);
@@ -17,9 +15,6 @@ class VerifyEmailScreen extends StatefulWidget {
 }
 
 class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
-
-
-
   bool _isEmailVerified = false;
   bool _canResendEmail = false;
   bool _loading = false;
@@ -73,14 +68,15 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 children: [
                   Container(
                     margin: const EdgeInsets.only(left: 12, bottom: 12),
-                    child: const AppIconWidget(),
+                    child: const Icon(
+      CupertinoIcons.hand_thumbsup_fill,
+      size: 128,
+    ),
                   ),
-                  const ShaderMaskWidget(
-                    child: Text(
-                      'A verification Email has been sent to you!',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                      ),
+                  const Text(
+                    'A verification Email has been sent to you!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                   Container(
@@ -112,16 +108,14 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                             ),
                     ),
                   ),
-                  ShaderMaskWidget(
-                    child: CupertinoButton(
-                        padding: EdgeInsets.zero,
-                        child: const Text('Cancel'),
-                        onPressed: () {
-                          final loginAuthApi =
-                              Provider.of<LoginAuthApi>(context, listen: false);
-                          loginAuthApi.signOut();
-                        }),
-                  ),
+                  CupertinoButton(
+                      padding: EdgeInsets.zero,
+                      child: const Text('Cancel'),
+                      onPressed: () {
+                        final loginAuthApi =
+                            Provider.of<LoginAuthApi>(context, listen: false);
+                        loginAuthApi.signOut();
+                      }),
                 ],
               ),
             ),

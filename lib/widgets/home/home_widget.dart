@@ -118,7 +118,10 @@ class _HomeWidgetState extends State<HomeWidget> {
                         'Remaining Polling Time',
                         style: TextStyle(
                           fontSize: 24,
-                          color: CupertinoColors.systemRed,
+                          color: CupertinoDynamicColor.withBrightness(
+                            color: CupertinoColors.black,
+                            darkColor: CupertinoColors.white,
+                          ),
                         ),
                       ),
                       const SizedBox(
@@ -132,18 +135,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                   margin: const EdgeInsets.symmetric(horizontal: 12),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        CupertinoColors.systemPurple,
-                        CupertinoColors.systemPink,
-                        CupertinoColors.systemYellow,
-                      ],
-                    ),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: CupertinoButton(
+                  child: CupertinoButton.filled(
                     padding: EdgeInsets.zero,
                     onPressed: () {
                       Navigator.pushNamed(context, ShowUsersScreen.route);
@@ -175,18 +169,9 @@ class _HomeWidgetState extends State<HomeWidget> {
                   margin: const EdgeInsets.symmetric(horizontal: 12),
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        CupertinoColors.systemPurple,
-                        CupertinoColors.systemPink,
-                        CupertinoColors.systemYellow,
-                      ],
-                    ),
                     borderRadius: BorderRadius.circular(5),
                   ),
-                  child: CupertinoButton(
+                  child: CupertinoButton.filled(
                     padding: EdgeInsets.zero,
                     onPressed: () {
                       Navigator.pushNamed(context, ApplyCandidateScreen.route);

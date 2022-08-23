@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:voting_system/main.dart';
-import 'package:voting_system/widgets/app_icon_widget.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -28,27 +27,22 @@ class _SplashScreenState extends State<SplashScreen> {
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const AppIconWidget(),
-            ShaderMask(
-              blendMode: BlendMode.srcIn,
-              shaderCallback: (bounds) => const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  CupertinoColors.systemPink,
-                  CupertinoColors.systemPurple,
-                  CupertinoColors.systemYellow,
-                ],
-              ).createShader(bounds),
-              child: const Text(
-                'Pakistan Online\nVoting System',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 40,
+          children: const [
+            Icon(
+              CupertinoIcons.hand_thumbsup_fill,
+              size: 128,
+            ),
+            Text(
+              'Pakistan Online\nVoting System',
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: 40,
+                color: CupertinoDynamicColor.withBrightness(
+                  color: CupertinoColors.black,
+                  darkColor: CupertinoColors.white,
                 ),
-                textAlign: TextAlign.center,
               ),
+              textAlign: TextAlign.center,
             ),
           ],
         ),

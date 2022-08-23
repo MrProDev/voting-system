@@ -1,8 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/auth/forgot_password_api.dart';
-import 'package:voting_system/widgets/app_icon_widget.dart';
-import 'package:voting_system/widgets/shader_mask_widget.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
@@ -32,7 +30,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           children: [
             Container(
               margin: const EdgeInsets.only(left: 12, bottom: 12),
-              child: const AppIconWidget(),
+              child: const Icon(
+              CupertinoIcons.hand_thumbsup_fill,
+              size: 128,
+            ),
             ),
             CupertinoFormSection(
               margin: const EdgeInsets.all(12),
@@ -43,9 +44,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   enableSuggestions: false,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  prefix: const ShaderMaskWidget(
-                    child: Icon(CupertinoIcons.mail),
-                  ),
+                  prefix: const Icon(CupertinoIcons.mail),
                   placeholder: 'Email Address',
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -65,18 +64,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               width: double.infinity,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    CupertinoColors.systemPurple,
-                    CupertinoColors.systemPink,
-                    CupertinoColors.systemYellow,
-                  ],
-                ),
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: CupertinoButton(
+              child: CupertinoButton.filled(
                 padding: EdgeInsets.zero,
                 onPressed: _resetPassword,
                 child: _loading

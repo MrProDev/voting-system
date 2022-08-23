@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/auth/login_auth_api.dart';
 import 'package:voting_system/screens/auth/forgot_password_screen.dart';
 import 'package:voting_system/screens/auth/signup_screen.dart';
-import 'package:voting_system/widgets/app_icon_widget.dart';
-import 'package:voting_system/widgets/shader_mask_widget.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -34,7 +32,10 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             Container(
               margin: const EdgeInsets.only(left: 12, bottom: 12),
-              child: const AppIconWidget(),
+              child: const Icon(
+                CupertinoIcons.hand_thumbsup_fill,
+                size: 128,
+              ),
             ),
             CupertinoFormSection(
               margin: const EdgeInsets.all(12),
@@ -45,9 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   enableSuggestions: false,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  prefix: const ShaderMaskWidget(
-                    child: Icon(CupertinoIcons.mail),
-                  ),
+                  prefix: const Icon(CupertinoIcons.mail),
                   placeholder: 'Email Address',
                   validator: (value) {
                     if (value!.isEmpty) {
@@ -62,9 +61,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   },
                 ),
                 CupertinoTextFormFieldRow(
-                  prefix: const ShaderMaskWidget(
-                    child: Icon(CupertinoIcons.lock),
-                  ),
+                  prefix: const Icon(CupertinoIcons.lock),
                   placeholder: 'Password',
                   obscureText: true,
                   validator: (value) {
@@ -84,31 +81,20 @@ class _LoginScreenState extends State<LoginScreen> {
               margin: const EdgeInsets.only(
                 right: 12,
               ),
-              child: ShaderMaskWidget(
-                child: CupertinoButton(
-                  padding: EdgeInsets.zero,
-                  child: const Text('Forgot Password?'),
-                  onPressed: () =>
-                      Navigator.pushNamed(context, ForgotPasswordScreen.route),
-                ),
+              child: CupertinoButton(
+                padding: EdgeInsets.zero,
+                child: const Text('Forgot Password?'),
+                onPressed: () =>
+                    Navigator.pushNamed(context, ForgotPasswordScreen.route),
               ),
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
               width: double.infinity,
               decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    CupertinoColors.systemPurple,
-                    CupertinoColors.systemPink,
-                    CupertinoColors.systemYellow,
-                  ],
-                ),
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: CupertinoButton(
+              child: CupertinoButton.filled(
                 padding: EdgeInsets.zero,
                 onPressed: _verifyCredentials,
                 child: _loading
@@ -121,12 +107,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
               ),
             ),
-            ShaderMaskWidget(
-              child: CupertinoButton(
-                child: const Text('Don\'t have an account yet?'),
-                onPressed: () =>
-                    Navigator.pushNamed(context, SignUpScreen.route),
-              ),
+            CupertinoButton(
+              child: const Text('Don\'t have an account yet?'),
+              onPressed: () => Navigator.pushNamed(context, SignUpScreen.route),
             ),
           ],
         ),
