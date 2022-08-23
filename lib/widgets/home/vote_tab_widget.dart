@@ -16,7 +16,9 @@ class _VoteTabWidgetState extends State<VoteTabWidget> {
           CupertinoSliverNavigationBar(
             largeTitle: Text('Vote'),
           ),
-          SliverFillRemaining(),
+          SliverFillRemaining(
+            
+          ),
         ],
       ),
     );

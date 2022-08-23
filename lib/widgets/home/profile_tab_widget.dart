@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/auth/login_auth_api.dart';
 import 'package:voting_system/firebase/profile/profile_api.dart';
 import 'package:voting_system/models/user_data.dart';
+import 'package:voting_system/widgets/home/profile_picture_widget.dart';
 
 class ProfileTabWidget extends StatefulWidget {
   const ProfileTabWidget({Key? key}) : super(key: key);
@@ -67,7 +68,7 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                                 Navigator.push(
                                   context,
                                   CupertinoPageRoute(
-                                    builder: (context) => ProfilePicture(
+                                    builder: (context) => ProfilePictureWidget(
                                       imageUrl: _userData!.imageUrl!,
                                     ),
                                   ),
@@ -235,40 +236,6 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                   ),
           )
         ],
-      ),
-    );
-  }
-}
-
-class ProfilePicture extends StatelessWidget {
-  const ProfilePicture({Key? key, required this.imageUrl}) : super(key: key);
-
-  final String imageUrl;
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: CupertinoNavigationBar(
-        middle: const Text('Profile Picture'),
-        previousPageTitle: 'Profile',
-        trailing: CupertinoButton(
-          padding: EdgeInsets.zero,
-          child: const Text('Done'),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      child: Center(
-        child: SizedBox(
-          height: 500,
-          width: double.infinity,
-          child: Hero(
-            tag: 'profile',
-            child: Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
       ),
     );
   }

@@ -21,11 +21,13 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.hand_thumbsup_fill),
+            icon: Icon(CupertinoIcons.hand_thumbsup),
+            activeIcon: Icon(CupertinoIcons.hand_thumbsup_fill),
             label: 'Vote',
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person),
+            activeIcon: Icon(CupertinoIcons.person_fill),
             label: 'Profile',
           ),
         ],
