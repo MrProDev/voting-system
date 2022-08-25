@@ -10,6 +10,8 @@ import 'package:voting_system/firebase/home/apply_candidate_api.dart';
 import 'package:voting_system/firebase/home/show_users_api.dart';
 import 'package:voting_system/firebase/home/countdown_time_api.dart';
 import 'package:voting_system/firebase/profile/profile_api.dart';
+import 'package:voting_system/firebase/vote/show_candidates_api.dart';
+import 'package:voting_system/firebase/vote/vote_api.dart';
 import 'package:voting_system/firebase_options.dart';
 import 'package:voting_system/screens/auth/forgot_password_screen.dart';
 import 'package:voting_system/screens/auth/login_screen.dart';
@@ -57,6 +59,13 @@ class VotingSystem extends StatelessWidget {
         ),
         Provider<CountdownTimeApi>(
           create: (_) => CountdownTimeApi(),
+        ),
+        Provider<ShowCandidatesApi>(
+          
+          create: (_) => ShowCandidatesApi(),
+        ),
+         Provider<VoteApi>(
+          create: (_) => VoteApi(),
         ),
       ],
       child: CupertinoApp(

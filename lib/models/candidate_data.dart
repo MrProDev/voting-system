@@ -1,27 +1,31 @@
 class CandidateData {
+  String? uid;
   String? partyName;
   String? imageUrl;
-  String? constituency;
   bool? isApproved;
+  String? constituency;
 
   CandidateData({
+    required this.uid,
     required this.partyName,
     required this.imageUrl,
-    required this.constituency,
     required this.isApproved,
+    required this.constituency
   });
 
   factory CandidateData.fromJson(Map<String, dynamic>? json) => CandidateData(
-        partyName: json!["partyName"],
+        uid: json!["uid"],
+        partyName: json["partyName"],
         imageUrl: json["imageUrl"],
-        constituency: json["constituency"],
         isApproved: json["isApproved"],
+        constituency: json["constituency"],
       );
 
   Map<String, dynamic> toJson() => {
+        "uid": uid,
         "partyName": partyName,
         "imageUrl": imageUrl,
-        "constituency": constituency,
         "isApproved": isApproved,
+        "constituency": constituency,
       };
 }

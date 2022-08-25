@@ -7,7 +7,6 @@ class UserWidget extends StatelessWidget {
     required this.constituency,
     required this.cnic,
     required this.email,
-    required this.uid,
     required this.imageUrl,
   }) : super(key: key);
 
@@ -15,7 +14,6 @@ class UserWidget extends StatelessWidget {
   final String constituency;
   final String cnic;
   final String email;
-  final String uid;
   final String imageUrl;
 
   @override

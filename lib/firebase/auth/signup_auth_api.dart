@@ -42,19 +42,19 @@ class SignUpAuthApi {
     required User user,
     required String imageUrl,
   }) async {
-    String uid = getCurrentUid();
     UserData userData = UserData(
+      uid: getCurrentUid(),
       name: name,
       email: user.email,
-      uid: uid,
       imageUrl: imageUrl,
       constituency: constituency,
       cnic: cnic,
       userType: "user",
+      hasVoted: false,
     );
     try {
       final DocumentReference<Map<String, dynamic>> doc =
-          FirebaseFirestore.instance.collection('users').doc(uid);
+          FirebaseFirestore.instance.collection('users').doc(getCurrentUid());
 
       await doc.set(userData.toJson());
     } on PlatformException {

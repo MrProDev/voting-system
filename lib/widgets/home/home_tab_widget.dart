@@ -14,8 +14,9 @@ class HomeTabWidget extends StatefulWidget {
 }
 
 class _HomeTabWidgetState extends State<HomeTabWidget> {
-  Duration? _duration;
+  Duration _duration = const Duration();
   Timer? _timer;
+  String _warning = '';
 
   bool _isLoading = false;
 
@@ -35,10 +36,17 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
     });
     final duration = await countdownTimeApi.getCountdownTimer();
     setState(() {
-      _isLoading = false;
-    });
-    setState(() {
       _duration = duration;
+      if (_duration.inHours >= 8) {
+        _warning = 'Polling is not started yet!';
+        _timer!.cancel();
+      } else if (_duration.inSeconds <= 0) {
+        _warning = 'Polling time is ended!';
+        _timer!.cancel();
+      } else {
+        _warning = '';
+      }
+      _isLoading = false;
     });
   }
 
@@ -46,7 +54,8 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
-        final seconds = _duration!.inSeconds - 1;
+        final seconds = _duration.inSeconds - 1;
+
         setState(() {
           if (seconds < 0) {
             _timer!.cancel();
@@ -66,9 +75,9 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
 
   Widget _buildTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(_duration!.inMinutes.remainder(60));
-    final seconds = twoDigits(_duration!.inSeconds.remainder(60));
-    final hours = twoDigits(_duration!.inHours.remainder(60));
+    final minutes = twoDigits(_duration.inMinutes.remainder(60));
+    final seconds = twoDigits(_duration.inSeconds.remainder(60));
+    final hours = twoDigits(_duration.inHours.remainder(60));
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -130,130 +139,141 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                 ? const Center(
                     child: CupertinoActivityIndicator(),
                   )
-                : Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.symmetric(
-                          vertical: 20,
-                        ),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Remaining Polling Time',
-                              style: TextStyle(
-                                fontSize: 24,
-                                color: CupertinoDynamicColor.withBrightness(
-                                  color: CupertinoColors.black,
-                                  darkColor: CupertinoColors.white,
+                : MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(
+                            vertical: 20,
+                          ),
+                          child: Column(
+                            children: [
+                              const Text(
+                                'Remaining Polling Time',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  color: CupertinoDynamicColor.withBrightness(
+                                    color: CupertinoColors.black,
+                                    darkColor: CupertinoColors.white,
+                                  ),
                                 ),
                               ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              _buildTime(),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Text(
+                                _warning,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, ShowUsersScreen.route);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Show Users',
+                                  style: TextStyle(
+                                    color: CupertinoColors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Icon(
+                                  CupertinoIcons.person_3_fill,
+                                  color: CupertinoColors.white,
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              height: 12,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {},
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Show Candidates',
+                                  style: TextStyle(
+                                    color: CupertinoColors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Icon(
+                                  CupertinoIcons.person_2_fill,
+                                  color: CupertinoColors.white,
+                                ),
+                              ],
                             ),
-                            _buildTime(),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 12),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: CupertinoButton.filled(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            Navigator.pushNamed(context, ShowUsersScreen.route);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Show Users',
-                                style: TextStyle(
-                                  color: CupertinoColors.white,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Icon(
-                                CupertinoIcons.person_3_fill,
-                                color: CupertinoColors.white,
-                              ),
-                            ],
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 12),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
+                        const SizedBox(
+                          height: 20,
                         ),
-                        child: CupertinoButton.filled(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {},
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Show Candidates',
-                                style: TextStyle(
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, ApplyCandidateScreen.route);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Apply for candidateship',
+                                  style: TextStyle(
+                                    color: CupertinoColors.white,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                Icon(
+                                  CupertinoIcons.person_add_solid,
                                   color: CupertinoColors.white,
                                 ),
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Icon(
-                                CupertinoIcons.person_2_fill,
-                                color: CupertinoColors.white,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 12),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: CupertinoButton.filled(
-                          padding: EdgeInsets.zero,
-                          onPressed: () {
-                            Navigator.pushNamed(
-                                context, ApplyCandidateScreen.route);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                'Apply for candidateship',
-                                style: TextStyle(
-                                  color: CupertinoColors.white,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              Icon(
-                                CupertinoIcons.person_add_solid,
-                                color: CupertinoColors.white,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
           ),
         ],

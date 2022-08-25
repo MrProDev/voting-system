@@ -48,7 +48,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
-        middle: Text('Apply for Candidate'),
+        middle: Text('Apply for Candidateship'),
         previousPageTitle: 'Home',
       ),
       child: Form(
@@ -187,7 +187,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
 
     final result = await apply.checkIfDocExists();
     if (result == true) {
-      _showAlertDialog('You have already applied for a candidate');
+      _showAlertDialog('You have already applied for a candidateship');
       setState(() {
         _loading = false;
       });

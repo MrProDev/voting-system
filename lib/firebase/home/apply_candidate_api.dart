@@ -8,7 +8,7 @@ import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/models/user_data.dart';
 
 class ApplyCandidateApi {
-  String getUid() => FirebaseAuth.instance.currentUser!.uid;
+  String getCurrentUid() => FirebaseAuth.instance.currentUser!.uid;
 
   Future applyForCandidate({
     required String partyName,
@@ -16,31 +16,36 @@ class ApplyCandidateApi {
   }) async {
     final userdoc = await FirebaseFirestore.instance
         .collection('users')
-        .doc(getUid())
+        .doc(getCurrentUid())
         .get();
 
     UserData userData = UserData.fromJson(userdoc.data());
 
     userData.userType = 'candidate';
 
-    await FirebaseFirestore.instance.collection('users').doc(getUid()).set(
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(getCurrentUid())
+        .set(
           userData.toJson(),
         );
 
-    String? constituency = userData.constituency;
-
     String? imageUrl = await uploadPartyImage(image: image);
 
+    String? constituency = await getConstituency();
+
     CandidateData candidateData = CandidateData(
+      uid: getCurrentUid(),
       partyName: partyName,
       imageUrl: imageUrl,
-      constituency: constituency,
       isApproved: false,
+      constituency: constituency,
     );
 
     try {
-      final doc =
-          FirebaseFirestore.instance.collection('candidates').doc(getUid());
+      final doc = FirebaseFirestore.instance
+          .collection('candidates')
+          .doc(getCurrentUid());
       await doc.set(candidateData.toJson());
     } on PlatformException {
       return null;
@@ -52,7 +57,7 @@ class ApplyCandidateApi {
       final ref = FirebaseStorage.instance
           .ref()
           .child('candidate_party_images')
-          .child('${getUid()}_party.jpg');
+          .child('${getCurrentUid()}_party.jpg');
       await ref.putFile(image);
       return await ref.getDownloadURL();
     } on PlatformException {
@@ -63,8 +68,8 @@ class ApplyCandidateApi {
   Future getConstituency() async {
     try {
       return await FirebaseFirestore.instance
-          .collection('candidates')
-          .doc(getUid())
+          .collection('users')
+          .doc(getCurrentUid())
           .get()
           .then(
             (value) => value.data()?['constituency'],
@@ -78,7 +83,7 @@ class ApplyCandidateApi {
     try {
       final doc = await FirebaseFirestore.instance
           .collection('candidates')
-          .doc(getUid())
+          .doc(getCurrentUid())
           .get();
 
       return doc.exists;

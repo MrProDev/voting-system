@@ -69,9 +69,9 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                   Container(
                     margin: const EdgeInsets.only(left: 12, bottom: 12),
                     child: const Icon(
-      CupertinoIcons.hand_thumbsup_fill,
-      size: 128,
-    ),
+                      CupertinoIcons.hand_thumbsup_fill,
+                      size: 128,
+                    ),
                   ),
                   const Text(
                     'A verification Email has been sent to you!',
@@ -84,18 +84,9 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                         horizontal: 12, vertical: 10),
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          CupertinoColors.systemPurple,
-                          CupertinoColors.systemPink,
-                          CupertinoColors.systemYellow,
-                        ],
-                      ),
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    child: CupertinoButton(
+                    child: CupertinoButton.filled(
                       padding: EdgeInsets.zero,
                       onPressed: _canResendEmail ? _sendVerification : null,
                       child: _loading

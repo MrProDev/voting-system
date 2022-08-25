@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
 
 class ProfilePictureWidget extends StatelessWidget {
-  const ProfilePictureWidget({Key? key, required this.imageUrl}) : super(key: key);
+  const ProfilePictureWidget({Key? key, required this.imageUrl, required this.uid})
+      : super(key: key);
 
+  final String uid;
   final String imageUrl;
 
   @override
@@ -22,7 +24,7 @@ class ProfilePictureWidget extends StatelessWidget {
           height: 500,
           width: double.infinity,
           child: Hero(
-            tag: 'profile',
+            tag: uid,
             child: Image.network(
               imageUrl,
               fit: BoxFit.cover,

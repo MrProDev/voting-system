@@ -1,7 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/home/apply_candidate_api.dart';
 import 'package:voting_system/firebase/home/show_users_api.dart';
 import 'package:voting_system/models/user_data.dart';
 import 'package:voting_system/widgets/home/user_widget.dart';
@@ -16,8 +14,9 @@ class ShowUsersScreen extends StatefulWidget {
 }
 
 class _ShowUsersScreenState extends State<ShowUsersScreen> {
-  String? _constituency;
-  bool _isApproved = false;
+  bool? _isApproved;
+
+  List<UserData>? _usersData;
 
   bool _isLoading = false;
 
@@ -30,16 +29,14 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
 
   _setData() async {
     final showUsersApi = Provider.of<ShowUsersApi>(context, listen: false);
-    final applyCandidateApi =
-        Provider.of<ApplyCandidateApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
-    var isApproved = await showUsersApi.checkIfApproved();
-    final constituency = await applyCandidateApi.getConstituency();
+    final isApproved = await showUsersApi.checkIfApproved();
+    final usersData = await showUsersApi.getUsersData();
     setState(() {
       _isApproved = isApproved;
-      _constituency = constituency;
+      _usersData = usersData;
       _isLoading = false;
     });
   }
@@ -49,6 +46,7 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         middle: Text('Users'),
+        previousPageTitle: 'Home',
       ),
       child: Container(
         margin: const EdgeInsets.only(
@@ -58,60 +56,58 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
             ? const Center(
                 child: CupertinoActivityIndicator(),
               )
-            : !_isApproved
+            : !_isApproved!
                 ? const Center(
                     child: Text(
                       'Please wait for admin to approve your candidateship',
                       textAlign: TextAlign.center,
                     ),
                   )
-                : StreamBuilder<List<UserData>>(
-                    stream: FirebaseFirestore.instance
-                        .collection('users')
-                        .where(
-                          'constituency',
-                          isEqualTo: _constituency,
-                        )
-                        .snapshots()
-                        .map(
-                          (snapshot) => snapshot.docs
-                              .map(
-                                (doc) => UserData.fromJson(
-                                  doc.data(),
-                                ),
-                              )
-                              .toList(),
+                : Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.fromLTRB(10, 5, 10, 20),
+                        child: CupertinoSearchTextField(
+                          onSuffixTap: () async {
+                            final showUsersApi = Provider.of<ShowUsersApi>(
+                                context,
+                                listen: false);
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            final usersData = await showUsersApi.getUsersData();
+                            setState(() {
+                              _usersData = usersData;
+                              _isLoading = false;
+                            });
+                          },
+                          onSubmitted: (name) {
+                            setState(() {
+                              _usersData = _usersData!
+                                  .where((user) => user.name!
+                                      .toLowerCase()
+                                      .contains(name.toLowerCase()))
+                                  .toList();
+                            });
+                          },
                         ),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CupertinoActivityIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text(
-                            snapshot.error.toString(),
-                          ),
-                        );
-                      } else {
-                        final users = snapshot.data!;
-
-                        return ListView.separated(
-                          itemCount: users.length,
+                      ),
+                      Expanded(
+                        child: ListView.separated(
+                          itemCount: _usersData!.length,
                           separatorBuilder: (context, index) => const SizedBox(
                             height: 10,
                           ),
                           itemBuilder: (context, index) => UserWidget(
-                            name: users[index].name!,
-                            constituency: users[index].constituency!,
-                            cnic: users[index].cnic!,
-                            email: users[index].email!,
-                            uid: users[index].uid!,
-                            imageUrl: users[index].imageUrl!,
+                            name: _usersData![index].name!,
+                            constituency: _usersData![index].constituency!,
+                            cnic: _usersData![index].cnic!,
+                            email: _usersData![index].email!,
+                            imageUrl: _usersData![index].imageUrl!,
                           ),
-                        );
-                      }
-                    },
+                        ),
+                      ),
+                    ],
                   ),
       ),
     );
