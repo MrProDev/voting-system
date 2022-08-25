@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/models/user_data.dart';
 
@@ -13,26 +16,15 @@ class ApplyCandidateApi {
   Future applyForCandidate({
     required String partyName,
     required File image,
+    required BuildContext context,
   }) async {
-    final userdoc = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(getCurrentUid())
-        .get();
+    final commonApi = Provider.of<UserApi>(context, listen: false);
+    UserData? userData = await commonApi.getUserData();
 
-    UserData userData = UserData.fromJson(userdoc.data());
-
-    userData.userType = 'candidate';
-
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(getCurrentUid())
-        .set(
-          userData.toJson(),
-        );
+    await commonApi.setUserData(userData: userData);
 
     String? imageUrl = await uploadPartyImage(image: image);
-
-    String? constituency = await getConstituency();
+    String? constituency = userData!.constituency;
 
     CandidateData candidateData = CandidateData(
       uid: getCurrentUid(),
@@ -65,21 +57,7 @@ class ApplyCandidateApi {
     }
   }
 
-  Future getConstituency() async {
-    try {
-      return await FirebaseFirestore.instance
-          .collection('users')
-          .doc(getCurrentUid())
-          .get()
-          .then(
-            (value) => value.data()?['constituency'],
-          );
-    } on PlatformException {
-      return null;
-    }
-  }
-
-  Future checkIfDocExists() async {
+  Future checkIfCandidateExists() async {
     try {
       final doc = await FirebaseFirestore.instance
           .collection('candidates')

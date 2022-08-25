@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/firebase/home/countdown_time_api.dart';
+import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/screens/home/apply_candidate_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 
@@ -14,33 +16,46 @@ class HomeTabWidget extends StatefulWidget {
 }
 
 class _HomeTabWidgetState extends State<HomeTabWidget> {
-  Duration _duration = const Duration();
+  Duration? _duration;
   Timer? _timer;
   String _warning = '';
+  String? _userType;
 
   bool _isLoading = false;
 
   @override
   void initState() {
-    _getTimer();
+    _setData();
     _startTimer();
 
     super.initState();
   }
 
-  _getTimer() async {
+  _setData() {
+    final userType = Provider.of<LoadData>(context, listen: false).userType;
+    final duration = Provider.of<LoadData>(context, listen: false).duration;
+    setState(() {
+      _duration = duration;
+      _userType = userType;
+    });
+  }
+
+  _getUpdatedData() async {
     final countdownTimeApi =
         Provider.of<CountdownTimeApi>(context, listen: false);
+    final userApi = Provider.of<UserApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
     final duration = await countdownTimeApi.getCountdownTimer();
+    final userType = await userApi.getUserType();
     setState(() {
       _duration = duration;
-      if (_duration.inHours >= 8) {
+      _userType = userType;
+      if (_duration!.inHours >= 8) {
         _warning = 'Polling is not started yet!';
         _timer!.cancel();
-      } else if (_duration.inSeconds <= 0) {
+      } else if (_duration!.inSeconds <= 0) {
         _warning = 'Polling time is ended!';
         _timer!.cancel();
       } else {
@@ -54,8 +69,7 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (timer) {
-        final seconds = _duration.inSeconds - 1;
-
+        final seconds = _duration!.inSeconds - 1;
         setState(() {
           if (seconds < 0) {
             _timer!.cancel();
@@ -75,9 +89,9 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
 
   Widget _buildTime() {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
-    final minutes = twoDigits(_duration.inMinutes.remainder(60));
-    final seconds = twoDigits(_duration.inSeconds.remainder(60));
-    final hours = twoDigits(_duration.inHours.remainder(60));
+    final minutes = twoDigits(_duration!.inMinutes.remainder(60));
+    final seconds = twoDigits(_duration!.inSeconds.remainder(60));
+    final hours = twoDigits(_duration!.inHours.remainder(60));
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -134,6 +148,11 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
             padding: EdgeInsetsDirectional.zero,
             largeTitle: Text('Home'),
           ),
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              await _getUpdatedData();
+            },
+          ),
           SliverFillRemaining(
             child: _isLoading
                 ? const Center(
@@ -143,6 +162,8 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                     context: context,
                     removeTop: true,
                     child: ListView(
+                      shrinkWrap: true,
+                      primary: false,
                       children: [
                         Container(
                           margin: const EdgeInsets.symmetric(
@@ -173,39 +194,43 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                             ],
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, ShowUsersScreen.route);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Show Users',
-                                  style: TextStyle(
-                                    color: CupertinoColors.white,
+                        _userType == 'candidate' || _userType == 'admin'
+                            ? Column(
+                              children: [
+                                Container(
+                                    margin:
+                                        const EdgeInsets.symmetric(horizontal: 12),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: CupertinoButton.filled(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, ShowUsersScreen.route);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: const [
+                                          Text(
+                                            'Show Users',
+                                            style: TextStyle(
+                                              color: CupertinoColors.white,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 15,
+                                          ),
+                                          Icon(
+                                            CupertinoIcons.person_3_fill,
+                                            color: CupertinoColors.white,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Icon(
-                                  CupertinoIcons.person_3_fill,
-                                  color: CupertinoColors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
+                                  const SizedBox(
                           height: 20,
                         ),
                         Container(
@@ -237,6 +262,10 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                             ),
                           ),
                         ),
+                              ],
+                            )
+                            : const SizedBox(),
+                        
                         const SizedBox(
                           height: 20,
                         ),

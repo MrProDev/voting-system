@@ -315,7 +315,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     } else {
       final imageUrl = await signUpAuthApi.uploadProfilePicture(image: image!);
-
       await signUpAuthApi.createUser(
         name: _name!,
         constituency: CommonData.constituencies[_selectedConstituency],

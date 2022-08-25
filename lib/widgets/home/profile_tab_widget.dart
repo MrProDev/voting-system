@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voting_system/firebase/auth/login_auth_api.dart';
-import 'package:voting_system/firebase/profile/profile_api.dart';
+import 'package:voting_system/firebase/candidate/candidate_api.dart';
+import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/models/user_data.dart';
+import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/widgets/home/profile_picture_widget.dart';
 
 class ProfileTabWidget extends StatefulWidget {
@@ -21,16 +24,27 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
 
   @override
   void initState() {
-    _setUserData();
+    _setData();
     super.initState();
   }
 
-  _setUserData() async {
-    final profileApi = Provider.of<ProfileApi>(context, listen: false);
+  _setData() {
+    final userData = Provider.of<LoadData>(context, listen: false).userData;
+    final candidateData =
+        Provider.of<LoadData>(context, listen: false).candidateData;
+    setState(() {
+      _userData = userData;
+      _candidateData = candidateData;
+    });
+  }
+
+  _getUpdatedData() async {
+    final profileApi = Provider.of<CandidateApi>(context, listen: false);
+    final commonApi = Provider.of<UserApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
-    final userData = await profileApi.getUserData();
+    final userData = await commonApi.getUserData();
     final candidateData = await profileApi.getCandidateData();
     setState(() {
       _userData = userData;
@@ -48,6 +62,11 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
             largeTitle: Text('Profile'),
             automaticallyImplyTitle: true,
           ),
+          CupertinoSliverRefreshControl(
+            onRefresh: () async {
+              _getUpdatedData();
+            },
+          ),
           SliverFillRemaining(
             child: _isLoading
                 ? const Center(
@@ -57,6 +76,8 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                     context: context,
                     removeTop: true,
                     child: ListView(
+                      shrinkWrap: true,
+                      primary: false,
                       children: [
                         Container(
                           color: const CupertinoDynamicColor.withBrightness(
@@ -248,6 +269,24 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                                 context,
                                 listen: false,
                               );
+
+                              Provider.of<LoadData>(context, listen: false)
+                                  .userType = null;
+                              Provider.of<LoadData>(context, listen: false)
+                                  .duration = null;
+                              Provider.of<LoadData>(context, listen: false)
+                                  .userData = null;
+                              Provider.of<LoadData>(context, listen: false)
+                                  .candidateData = null;
+                              Provider.of<LoadData>(context, listen: false)
+                                  .usersData = null;
+                              Provider.of<LoadData>(context, listen: false)
+                                  .candidatesData = null;
+
+                              final prefs =
+                                  await SharedPreferences.getInstance();
+                              prefs.setBool('login', false);
+
                               await loginAuthApi.signOut();
                             },
                             child: Row(

@@ -185,7 +185,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
       _loading = true;
     });
 
-    final result = await apply.checkIfDocExists();
+    final result = await apply.checkIfCandidateExists();
     if (result == true) {
       _showAlertDialog('You have already applied for a candidateship');
       setState(() {
@@ -200,7 +200,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
       return;
     }
 
-    await apply.applyForCandidate(partyName: _partyName!, image: _image!);
+    await apply.applyForCandidate(partyName: _partyName!, image: _image!, context: context);
     setState(() {
       _loading = false;
     });

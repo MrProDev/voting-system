@@ -46,6 +46,7 @@ dependencies:
   intl: ^0.17.0
   flutter_countdown_timer: ^4.1.0
   timezone: ^0.8.0
+  shared_preferences: ^2.0.15
 
 dev_dependencies:
   flutter_test:

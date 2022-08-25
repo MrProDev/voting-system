@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/home/show_users_api.dart';
+import 'package:voting_system/firebase/candidate/candidate_api.dart';
+import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/user_data.dart';
 import 'package:voting_system/widgets/home/user_widget.dart';
 
@@ -16,7 +17,7 @@ class ShowUsersScreen extends StatefulWidget {
 class _ShowUsersScreenState extends State<ShowUsersScreen> {
   bool? _isApproved;
 
-  List<UserData>? _usersData;
+  List<UserData>? _showUsersData;
 
   bool _isLoading = false;
 
@@ -28,15 +29,16 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
   }
 
   _setData() async {
-    final showUsersApi = Provider.of<ShowUsersApi>(context, listen: false);
+    final candidateApi = Provider.of<CandidateApi>(context, listen: false);
+    final userApi = Provider.of<UserApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
-    final isApproved = await showUsersApi.checkIfApproved();
-    final usersData = await showUsersApi.getUsersData();
+    final isApproved = await candidateApi.checkIfApproved();
+    final usersData = await userApi.getUsersData(context: context);
     setState(() {
       _isApproved = isApproved;
-      _usersData = usersData;
+      _showUsersData = usersData;
       _isLoading = false;
     });
   }
@@ -44,72 +46,79 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('Users'),
-        previousPageTitle: 'Home',
-      ),
-      child: Container(
-        margin: const EdgeInsets.only(
-          top: 10,
+        navigationBar: const CupertinoNavigationBar(
+          middle: Text('Users'),
+          previousPageTitle: 'Home',
         ),
-        child: _isLoading
-            ? const Center(
-                child: CupertinoActivityIndicator(),
-              )
-            : !_isApproved!
-                ? const Center(
-                    child: Text(
-                      'Please wait for admin to approve your candidateship',
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                : Column(
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(10, 5, 10, 20),
-                        child: CupertinoSearchTextField(
-                          onSuffixTap: () async {
-                            final showUsersApi = Provider.of<ShowUsersApi>(
-                                context,
-                                listen: false);
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            final usersData = await showUsersApi.getUsersData();
-                            setState(() {
-                              _usersData = usersData;
-                              _isLoading = false;
-                            });
-                          },
-                          onSubmitted: (name) {
-                            setState(() {
-                              _usersData = _usersData!
-                                  .where((user) => user.name!
-                                      .toLowerCase()
-                                      .contains(name.toLowerCase()))
-                                  .toList();
-                            });
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: ListView.separated(
-                          itemCount: _usersData!.length,
-                          separatorBuilder: (context, index) => const SizedBox(
-                            height: 10,
+        child: CustomScrollView(
+          slivers: [
+            CupertinoSliverRefreshControl(
+              onRefresh: () async {
+                _setData();
+              },
+            ),
+            SliverFillRemaining(
+              child: _isLoading
+                  ? const Center(
+                      child: CupertinoActivityIndicator(),
+                    )
+                  : !_isApproved!
+                      ? const Center(
+                          child: Text(
+                            'Please wait for admin to approve your candidateship',
+                            textAlign: TextAlign.center,
                           ),
-                          itemBuilder: (context, index) => UserWidget(
-                            name: _usersData![index].name!,
-                            constituency: _usersData![index].constituency!,
-                            cnic: _usersData![index].cnic!,
-                            email: _usersData![index].email!,
-                            imageUrl: _usersData![index].imageUrl!,
-                          ),
+                        )
+                      : ListView(
+                          shrinkWrap: true,
+                          primary: false,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              child: CupertinoSearchTextField(
+                                onChanged: (name) {
+                                  setState(() {
+                                    _showUsersData = _showUsersData!
+                                        .where((user) => user.name!
+                                            .toLowerCase()
+                                            .contains(name.toLowerCase()))
+                                        .toList();
+                                  });
+                                },
+                                onSubmitted: (name) {
+                                  setState(() {
+                                    _showUsersData = _showUsersData!
+                                        .where((user) => user.name!
+                                            .toLowerCase()
+                                            .contains(name.toLowerCase()))
+                                        .toList();
+                                  });
+                                },
+                              ),
+                            ),
+                            ListView.separated(
+                              shrinkWrap: true,
+                              primary: false,
+                              itemCount: _showUsersData!.length,
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(
+                                height: 10,
+                              ),
+                              itemBuilder: (context, index) => UserWidget(
+                                name: _showUsersData![index].name!,
+                                constituency: _showUsersData![index].constituency!,
+                                cnic: _showUsersData![index].cnic!,
+                                email: _showUsersData![index].email!,
+                                imageUrl: _showUsersData![index].imageUrl!,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-      ),
-    );
+            )
+          ],
+        ));
   }
 }

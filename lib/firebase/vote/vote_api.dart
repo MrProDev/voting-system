@@ -1,8 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/user_data.dart';
 
 class VoteApi {
+  String getCurrentUid() => FirebaseAuth.instance.currentUser!.uid;
   Future<bool?> checkIfVoted({
     required String userUid,
   }) async {
@@ -41,20 +46,16 @@ class VoteApi {
 
   Future voteDone({
     required String userUid,
+    required BuildContext context,
   }) async {
     try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userUid)
-          .get();
+      final commonApi = Provider.of<UserApi>(context, listen: false);
 
-      UserData userData = UserData.fromJson(doc.data());
+      UserData? userData = await commonApi.getUserData();
 
-      userData.hasVoted = true;
+      userData!.hasVoted = true;
 
-      await FirebaseFirestore.instance.collection('users').doc(userUid).set(
-            userData.toJson(),
-          );
+      await commonApi.setUserData(userData: userData);
     } on PlatformException {
       return null;
     }

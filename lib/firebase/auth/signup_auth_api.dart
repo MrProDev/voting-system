@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:voting_system/models/user_data.dart';
 
 class SignUpAuthApi {
+  String getCurrentUid() => FirebaseAuth.instance.currentUser!.uid;
   Future<User?> createUserWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -16,10 +17,6 @@ class SignUpAuthApi {
     } on FirebaseAuthException {
       return null;
     }
-  }
-
-  String getCurrentUid() {
-    return FirebaseAuth.instance.currentUser!.uid;
   }
 
   Future<String?> uploadProfilePicture({required File image}) async {
@@ -53,8 +50,10 @@ class SignUpAuthApi {
       hasVoted: false,
     );
     try {
-      final DocumentReference<Map<String, dynamic>> doc =
-          FirebaseFirestore.instance.collection('users').doc(getCurrentUid());
+      final DocumentReference<Map<String, dynamic>> doc = FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(getCurrentUid());
 
       await doc.set(userData.toJson());
     } on PlatformException {

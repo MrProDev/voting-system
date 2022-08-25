@@ -187,7 +187,7 @@ class _CandidateProfileDetailsWidgetState
                 );
 
                 if (result == true) {
-                  _showAlertDialog('You have already casted your vote');
+                  _showAlertDialog('You have already casted your vote.\nVote cast can\'t be updated!');
                   setState(() {
                     _isLoading = false;
                   });
@@ -205,7 +205,7 @@ class _CandidateProfileDetailsWidgetState
                   candidateUid: widget.candidateUid,
                 );
 
-                await voteApi.voteDone(userUid: widget.userUid);
+                await voteApi.voteDone(userUid: widget.userUid, context: context,);
 
                 setState(() {
                   _isLoading = false;
