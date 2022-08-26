@@ -19,6 +19,7 @@ import 'package:voting_system/screens/auth/login_screen.dart';
 import 'package:voting_system/screens/auth/signup_screen.dart';
 import 'package:voting_system/screens/auth/verify_email_screen.dart';
 import 'package:voting_system/screens/home/apply_candidate_screen.dart';
+import 'package:voting_system/screens/home/approve_candidates_screen.dart';
 import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 import 'package:voting_system/screens/splash/splash_screen.dart';
@@ -91,6 +92,7 @@ class VotingSystem extends StatelessWidget {
           ApplyCandidateScreen.route: (p0) => const ApplyCandidateScreen(),
           ShowUsersScreen.route: (p0) => const ShowUsersScreen(),
           PickPollingTimeScreen.route:(p0) => const PickPollingTimeScreen(),
+          ApproveCandidatesScreen.route:(p0) => const ApproveCandidatesScreen()
         },
         initialRoute: '/',
       ),

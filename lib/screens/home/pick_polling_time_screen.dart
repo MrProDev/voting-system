@@ -19,6 +19,8 @@ class _PickPollingTimeScreenState extends State<PickPollingTimeScreen> {
   String _startTimeText = 'Start Time';
   String _endTimeText = 'End Time';
 
+  bool _isLoading = true;
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -114,23 +116,24 @@ class _PickPollingTimeScreenState extends State<PickPollingTimeScreen> {
                 onPressed: () async {
                   final countdownTimeApi =
                       Provider.of<CountdownTimeApi>(context, listen: false);
+                  setState(() {
+                    _isLoading = true;
+                  });
                   await countdownTimeApi.setCountdownTimer(
                       startPollingTime: _startDateTime,
                       endPollingTime: _endDateTime);
-                  if (!mounted) return;
-                  Navigator.pop(context);
+                  setState(() {
+                    _isLoading = false;
+                  });
                 },
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Text(
-                      'Set',
-                      style: TextStyle(
-                        color: CupertinoColors.white,
+                child: _isLoading
+                    ? const CupertinoActivityIndicator()
+                    : const Text(
+                        'Set',
+                        style: TextStyle(
+                          color: CupertinoColors.white,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
               ),
             )
           ],

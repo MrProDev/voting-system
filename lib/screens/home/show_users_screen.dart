@@ -87,6 +87,9 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
                                 vertical: 8,
                               ),
                               child: CupertinoSearchTextField(
+                                onSuffixTap: () async {
+                                  _getUpdatedData();
+                                },
                                 onChanged: (name) {
                                   setState(() {
                                     _showUsersData = _showUsersData!
@@ -96,15 +99,7 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
                                         .toList();
                                   });
                                 },
-                                onSubmitted: (name) {
-                                  setState(() {
-                                    _showUsersData = _showUsersData!
-                                        .where((user) => user.name!
-                                            .toLowerCase()
-                                            .contains(name.toLowerCase()))
-                                        .toList();
-                                  });
-                                },
+                                
                               ),
                             ),
                             ListView.separated(

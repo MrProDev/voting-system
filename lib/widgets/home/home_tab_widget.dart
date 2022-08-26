@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/firebase/home/countdown_time_api.dart';
 import 'package:voting_system/providers/load_data.dart';
+import 'package:voting_system/screens/home/approve_candidates_screen.dart';
 import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 
@@ -204,7 +205,8 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                                 ),
                                 child: CupertinoButton.filled(
                                   padding: EdgeInsets.zero,
-                                  onPressed: () => Navigator.pushNamed(context, PickPollingTimeScreen.route),
+                                  onPressed: () => Navigator.pushNamed(
+                                      context, PickPollingTimeScreen.route),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: const [
@@ -223,43 +225,49 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                           height: 20,
                         ),
                         _userType == 'candidate'
-                            ? Column(
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.symmetric(
-                                        horizontal: 12),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5),
-                                    ),
-                                    child: CupertinoButton.filled(
-                                      padding: EdgeInsets.zero,
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                            context, ShowUsersScreen.route);
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: const [
-                                          Text(
-                                            'Show Users',
-                                            style: TextStyle(
-                                              color: CupertinoColors.white,
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 15,
-                                          ),
-                                          Icon(
-                                            CupertinoIcons.person_3_fill,
-                                            color: CupertinoColors.white,
-                                          ),
-                                        ],
-                                      ),
+                            ? Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: CupertinoButton.filled(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, ShowUsersScreen.route);
+                                  },
+                                  child: const Text(
+                                    'Show Users',
+                                    style: TextStyle(
+                                      color: CupertinoColors.white,
                                     ),
                                   ),
-                                ],
+                                ),
+                              )
+                            : const SizedBox(),
+                        _userType == 'admin'
+                            ? Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: CupertinoButton.filled(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, ApproveCandidatesScreen.route);
+                                  },
+                                  child: const Text(
+                                    'Approve Candidates',
+                                    style: TextStyle(
+                                      color: CupertinoColors.white,
+                                    ),
+                                  ),
+                                ),
                               )
                             : const SizedBox(),
                       ],

@@ -16,6 +16,9 @@ class LoadData {
   List<UserData>? usersData;
   List<CandidateData>? candidatesData;
 
+  List<UserData>? pendingUsersData;
+  List<CandidateData>? pendingCandidatesData;
+
   loadData(BuildContext context) async {
     final userApi = Provider.of<UserApi>(context, listen: false);
     final countdownTimeApi =
@@ -23,6 +26,10 @@ class LoadData {
     final candidateApi = Provider.of<CandidateApi>(context, listen: false);
     userType = await userApi.getUserType();
     duration = await countdownTimeApi.getCountdownTimer();
+    if (userType == 'admin') {
+      pendingCandidatesData = await candidateApi.getPendingCandidatesData();
+      pendingUsersData = await userApi.getPendingCandidatesData();
+    }
     if (userType == 'candidate') {
       isApproved = await candidateApi.checkIfApproved();
       candidateData = await candidateApi.getCandidateData();

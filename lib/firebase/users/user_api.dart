@@ -86,6 +86,29 @@ class UserApi {
     }
   }
 
+  Future<List<UserData>?> getPendingCandidatesData() async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .where(
+            'userType',
+            isEqualTo: 'candidate',
+          ).limit(20)
+          .get();
+
+      return snapshot.docs
+          .map(
+            (userDoc) => UserData.fromJson(
+              userDoc.data(),
+            ),
+          )
+          .toList();
+    } on PlatformException {
+      return null;
+    }
+  }
+
+
   Future<List<UserData>?> getUsersData({required BuildContext context }) async {
     try {
       final commonApi = Provider.of<UserApi>(context, listen: false);
@@ -98,7 +121,7 @@ class UserApi {
           .where(
             'userType',
             isEqualTo: 'candidate',
-          )
+          ).limit(20)
           .get();
 
       return snapshot.docs
