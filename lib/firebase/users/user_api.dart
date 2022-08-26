@@ -71,7 +71,7 @@ class UserApi {
           .where(
             'constituency',
             isEqualTo: await commonApi.getConstituency(),
-          )
+          ).limit(20)
           .get();
 
       return snapshot.docs

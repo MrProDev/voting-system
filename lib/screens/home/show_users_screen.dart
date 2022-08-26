@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/candidate/candidate_api.dart';
 import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/user_data.dart';
+import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/widgets/home/user_widget.dart';
 
 class ShowUsersScreen extends StatefulWidget {
@@ -28,14 +29,21 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
     super.initState();
   }
 
-  _setData() async {
+  _setData() {
+    final isApproved = Provider.of<LoadData>(context, listen: false).isApproved;
+    setState(() {
+      _isApproved = isApproved;
+    });
+  }
+
+  _getUpdatedData() async {
     final candidateApi = Provider.of<CandidateApi>(context, listen: false);
     final userApi = Provider.of<UserApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
     final isApproved = await candidateApi.checkIfApproved();
-    final usersData = await userApi.getUsersData(context: context);
+    final usersData = await userApi.getShowUsersData(context: context);
     setState(() {
       _isApproved = isApproved;
       _showUsersData = usersData;
@@ -54,7 +62,7 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
           slivers: [
             CupertinoSliverRefreshControl(
               onRefresh: () async {
-                _setData();
+                _getUpdatedData();
               },
             ),
             SliverFillRemaining(
@@ -109,7 +117,8 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
                               ),
                               itemBuilder: (context, index) => UserWidget(
                                 name: _showUsersData![index].name!,
-                                constituency: _showUsersData![index].constituency!,
+                                constituency:
+                                    _showUsersData![index].constituency!,
                                 cnic: _showUsersData![index].cnic!,
                                 email: _showUsersData![index].email!,
                                 imageUrl: _showUsersData![index].imageUrl!,

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/firebase/home/countdown_time_api.dart';
 import 'package:voting_system/providers/load_data.dart';
-import 'package:voting_system/screens/home/apply_candidate_screen.dart';
+import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 
 class HomeTabWidget extends StatefulWidget {
@@ -194,12 +194,40 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                             ],
                           ),
                         ),
-                        _userType == 'candidate' || _userType == 'admin'
+                        _userType == 'admin'
+                            ? Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 12),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: CupertinoButton.filled(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () => Navigator.pushNamed(context, PickPollingTimeScreen.route),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        'Pick Polling Time',
+                                        style: TextStyle(
+                                          color: CupertinoColors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        _userType == 'candidate'
                             ? Column(
-                              children: [
-                                Container(
-                                    margin:
-                                        const EdgeInsets.symmetric(horizontal: 12),
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 12),
                                     width: double.infinity,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(5),
@@ -211,7 +239,8 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                                             context, ShowUsersScreen.route);
                                       },
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: const [
                                           Text(
                                             'Show Users',
@@ -230,77 +259,9 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                                       ),
                                     ),
                                   ),
-                                  const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {},
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Show Candidates',
-                                  style: TextStyle(
-                                    color: CupertinoColors.white,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Icon(
-                                  CupertinoIcons.person_2_fill,
-                                  color: CupertinoColors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                              ],
-                            )
+                                ],
+                              )
                             : const SizedBox(),
-                        
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, ApplyCandidateScreen.route);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Apply for candidateship',
-                                  style: TextStyle(
-                                    color: CupertinoColors.white,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 15,
-                                ),
-                                Icon(
-                                  CupertinoIcons.person_add_solid,
-                                  color: CupertinoColors.white,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),

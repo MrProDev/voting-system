@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:voting_system/firebase/auth/login_auth_api.dart';
 import 'package:voting_system/firebase/candidate/candidate_api.dart';
 import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/models/user_data.dart';
 import 'package:voting_system/providers/load_data.dart';
+import 'package:voting_system/screens/home/apply_candidate_screen.dart';
 import 'package:voting_system/widgets/home/profile_picture_widget.dart';
 
 class ProfileTabWidget extends StatefulWidget {
@@ -20,6 +20,7 @@ class ProfileTabWidget extends StatefulWidget {
 class _ProfileTabWidgetState extends State<ProfileTabWidget> {
   UserData? _userData;
   CandidateData? _candidateData;
+  String? _userType;
   bool _isLoading = false;
 
   @override
@@ -29,24 +30,32 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
   }
 
   _setData() {
+    final userType = Provider.of<LoadData>(context, listen: false).userType;
     final userData = Provider.of<LoadData>(context, listen: false).userData;
     final candidateData =
         Provider.of<LoadData>(context, listen: false).candidateData;
+
     setState(() {
+      _userType = userType;
       _userData = userData;
       _candidateData = candidateData;
     });
   }
 
   _getUpdatedData() async {
+    CandidateData? candidateData;
     final profileApi = Provider.of<CandidateApi>(context, listen: false);
-    final commonApi = Provider.of<UserApi>(context, listen: false);
+    final userApi = Provider.of<UserApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
-    final userData = await commonApi.getUserData();
-    final candidateData = await profileApi.getCandidateData();
+    final userType = await userApi.getUserType();
+    final userData = await userApi.getUserData();
+    if (_userType == 'candidate' || _userType == 'user') {
+      candidateData = await profileApi.getCandidateData();
+    }
     setState(() {
+      _userType = userType;
       _userData = userData;
       _candidateData = candidateData;
       _isLoading = false;
@@ -217,7 +226,7 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                             _userData!.constituency!,
                           ),
                         ),
-                        _userData!.userType! == 'candidate'
+                        _userType == 'candidate'
                             ? Column(
                                 children: [
                                   Container(
@@ -255,14 +264,55 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                                 ],
                               )
                             : const SizedBox(),
+                        _userType == 'user' ||
+                                _userType == 'candidate'
+                            ? Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 12,
+                                ),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                child: CupertinoButton.filled(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {
+                                    Navigator.pushNamed(
+                                        context, ApplyCandidateScreen.route);
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        'Apply for candidateship',
+                                        style: TextStyle(
+                                          color: CupertinoColors.white,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 15,
+                                      ),
+                                      Icon(
+                                        CupertinoIcons.person_add_solid,
+                                        color: CupertinoColors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : const SizedBox(),
                         Container(
                           margin: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 50),
+                            horizontal: 12,
+                            vertical: 12,
+                          ),
                           width: double.infinity,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: CupertinoButton.filled(
+                          child: CupertinoButton(
+                            color: CupertinoColors.systemRed.withOpacity(0.7),
                             padding: EdgeInsets.zero,
                             onPressed: () async {
                               final loginAuthApi = Provider.of<LoginAuthApi>(
@@ -282,10 +332,8 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                                   .usersData = null;
                               Provider.of<LoadData>(context, listen: false)
                                   .candidatesData = null;
-
-                              final prefs =
-                                  await SharedPreferences.getInstance();
-                              prefs.setBool('login', false);
+                              Provider.of<LoadData>(context, listen: false)
+                                  .isApproved = null;
 
                               await loginAuthApi.signOut();
                             },

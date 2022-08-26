@@ -11,6 +11,7 @@ class LoadData {
   Duration? duration;
   UserData? userData;
   CandidateData? candidateData;
+  bool? isApproved;
 
   List<UserData>? usersData;
   List<CandidateData>? candidatesData;
@@ -22,9 +23,9 @@ class LoadData {
     final candidateApi = Provider.of<CandidateApi>(context, listen: false);
     userType = await userApi.getUserType();
     duration = await countdownTimeApi.getCountdownTimer();
-    if (userType == 'candidate'){
-
-    candidateData = await candidateApi.getCandidateData();
+    if (userType == 'candidate') {
+      isApproved = await candidateApi.checkIfApproved();
+      candidateData = await candidateApi.getCandidateData();
     }
     usersData = await userApi.getUsersData(context: context);
     userData = await userApi.getUserData();

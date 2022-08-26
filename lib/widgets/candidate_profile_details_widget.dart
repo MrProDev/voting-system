@@ -62,7 +62,7 @@ class _CandidateProfileDetailsWidgetState
                     widget.imageUrl,
                     width: double.infinity,
                     alignment: Alignment.topCenter,
-                    height: 250,
+                    height: 350,
                     fit: BoxFit.cover,
                   ),
                 ),

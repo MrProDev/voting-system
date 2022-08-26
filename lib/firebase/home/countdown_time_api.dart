@@ -35,4 +35,22 @@ class CountdownTimeApi {
       return null;
     }
   }
+
+  Future setCountdownTimer({
+    required DateTime startPollingTime,
+    required DateTime endPollingTime,
+  }) async {
+    try {
+      final doc = FirebaseFirestore.instance
+          .collection('countdowntime')
+          .doc('countdown timer');
+
+      await doc.set({
+        'startPollingTime': Timestamp.fromDate(startPollingTime),
+        'endPollingTime': Timestamp.fromDate(endPollingTime),
+      });
+    } on PlatformException {
+      return null;
+    }
+  }
 }

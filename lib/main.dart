@@ -12,14 +12,17 @@ import 'package:voting_system/firebase/home/apply_candidate_api.dart';
 import 'package:voting_system/firebase/home/countdown_time_api.dart';
 import 'package:voting_system/firebase/vote/vote_api.dart';
 import 'package:voting_system/firebase_options.dart';
+import 'package:voting_system/providers/countdown_provider.dart';
 import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/screens/auth/forgot_password_screen.dart';
 import 'package:voting_system/screens/auth/login_screen.dart';
 import 'package:voting_system/screens/auth/signup_screen.dart';
 import 'package:voting_system/screens/auth/verify_email_screen.dart';
 import 'package:voting_system/screens/home/apply_candidate_screen.dart';
+import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 import 'package:voting_system/screens/splash/splash_screen.dart';
+import 'package:voting_system/widgets/splash/splash_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,6 +69,9 @@ class VotingSystem extends StatelessWidget {
         Provider<LoadData>(
           create: (_) => LoadData(),
         ),
+        ChangeNotifierProvider<CountdownProvider>(
+          create: (_) => CountdownProvider(),
+        ),
       ],
       child: CupertinoApp(
         theme: const CupertinoThemeData(
@@ -84,6 +90,7 @@ class VotingSystem extends StatelessWidget {
           ForgotPasswordScreen.route: (p0) => const ForgotPasswordScreen(),
           ApplyCandidateScreen.route: (p0) => const ApplyCandidateScreen(),
           ShowUsersScreen.route: (p0) => const ShowUsersScreen(),
+          PickPollingTimeScreen.route:(p0) => const PickPollingTimeScreen(),
         },
         initialRoute: '/',
       ),
@@ -93,8 +100,6 @@ class VotingSystem extends StatelessWidget {
 
 class AuthPage extends StatelessWidget {
   const AuthPage({Key? key}) : super(key: key);
-
-  static const route = '/AuthPage';
 
   _loadData(BuildContext context) async {
     final loadData = Provider.of<LoadData>(context, listen: false);
@@ -121,32 +126,7 @@ class AuthPage extends StatelessWidget {
             future: _loadData(context),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CupertinoPageScaffold(
-                  child: Center(
-                    child: Column(
-                      children: const [
-                        Text(
-                          'Loading Data...',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w300,
-                            fontSize: 40,
-                            color: CupertinoDynamicColor.withBrightness(
-                              color: CupertinoColors.black,
-                              darkColor: CupertinoColors.white,
-                            ),
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(
-                          height: 64,
-                        ),
-                        CupertinoActivityIndicator(
-                          radius: 16,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
+                return const SplashWidget();
               } else if (snapshot.hasError) {
                 return const CupertinoPageScaffold(
                   child: Center(

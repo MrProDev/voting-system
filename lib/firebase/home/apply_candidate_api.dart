@@ -18,10 +18,10 @@ class ApplyCandidateApi {
     required File image,
     required BuildContext context,
   }) async {
-    final commonApi = Provider.of<UserApi>(context, listen: false);
-    UserData? userData = await commonApi.getUserData();
+    final userApi = Provider.of<UserApi>(context, listen: false);
+    UserData? userData = await userApi.getUserData();
 
-    await commonApi.setUserData(userData: userData);
+    await userApi.setUserData(userData: userData);
 
     String? imageUrl = await uploadPartyImage(image: image);
     String? constituency = userData!.constituency;
