@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/providers/candidate_provider.dart';
@@ -26,9 +25,7 @@ class VoteTabWidget extends StatelessWidget {
           const CupertinoSliverNavigationBar(
             largeTitle: Text('Vote'),
           ),
-          CupertinoSliverRefreshControl(
-            onRefresh: () async {},
-          ),
+          
           SliverFillRemaining(
             child: MediaQuery.removePadding(
               removeTop: true,
@@ -39,6 +36,10 @@ class VoteTabWidget extends StatelessWidget {
                     .where(
                       'constituency',
                       isEqualTo: userProvider.getConstituency(),
+                    )
+                    .where(
+                      'userType',
+                      whereIn: ['user', 'candidate'],
                     )
                     .snapshots()
                     .map(
@@ -105,9 +106,9 @@ class VoteTabWidget extends StatelessWidget {
                             ),
                             itemBuilder: (context, index) => CandidateWidget(
                               seconds: countdownProvider.duration.inSeconds,
-                              userUid: FirebaseAuth.instance.currentUser!.uid,
+                              userUid: users![index].uid!,
                               candidateUid: candidatesData[index].uid!,
-                              name: users![index].name!,
+                              name: users[index].name!,
                               constituency: candidatesData[index].constituency!,
                               imageUrl: users[index].imageUrl!,
                               partyName: candidatesData[index].partyName!,

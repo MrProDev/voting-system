@@ -21,4 +21,8 @@ class CandidateProvider extends ChangeNotifier {
     return _currentCandidate!.constituency ?? '';
   }
 
+  bool isApproved() {
+    return _currentCandidate!.isApproved ?? false;
+  }
+
 }

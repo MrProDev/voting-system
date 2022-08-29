@@ -1,7 +1,7 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/services/candidate/candidate_api.dart';
 
 class ApproveCandidateWidget extends StatefulWidget {
@@ -58,10 +58,16 @@ class _ApproveCandidateWidgetState extends State<ApproveCandidateWidget> {
             onPressed: () async {
               final candidateApi =
                   Provider.of<CandidateApi>(context, listen: false);
+              CandidateData candidateData = CandidateData(
+                  uid: widget.uid,
+                  partyName: widget.name,
+                  imageUrl: widget.imageUrl,
+                  isApproved: widget.isApproved,
+                  constituency: widget.constituency);
               setState(() {
                 _isLoading = true;
               });
-              await candidateApi.setCandidateAsApproved(uid: widget.uid);
+              await candidateApi.setCandidateAsApproved(candidateData: candidateData);
               setState(() {
                 _isLoading = false;
               });

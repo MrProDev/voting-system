@@ -4,22 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:voting_system/providers/candidate_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/services/auth/login_auth_api.dart';
-import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/screens/profile/apply_candidate_screen.dart';
 import 'package:voting_system/widgets/home/profile_picture_widget.dart';
 
-class ProfileTabWidget extends StatefulWidget {
+class ProfileTabWidget extends StatelessWidget {
   const ProfileTabWidget({Key? key}) : super(key: key);
-
-  @override
-  State<ProfileTabWidget> createState() => _ProfileTabWidgetState();
-}
-
-class _ProfileTabWidgetState extends State<ProfileTabWidget> {
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -275,15 +264,6 @@ class _ProfileTabWidgetState extends State<ProfileTabWidget> {
                           context,
                           listen: false,
                         );
-
-                        Provider.of<LoadData>(context, listen: false).userType =
-                            null;
-                        Provider.of<LoadData>(context, listen: false).userData =
-                            null;
-                        Provider.of<LoadData>(context, listen: false)
-                            .candidateData = null;
-                        Provider.of<LoadData>(context, listen: false)
-                            .isApproved = null;
 
                         await loginAuthApi.signOut();
                       },

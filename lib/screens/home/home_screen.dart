@@ -1,29 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/providers/load_data.dart';
+import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/widgets/home/home_tab_widget.dart';
 import 'package:voting_system/widgets/home/profile_tab_widget.dart';
 import 'package:voting_system/widgets/home/vote_tab_widget.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  String? _userType;
-
-  @override
-  void initState() {
-    _userType = Provider.of<LoadData>(context, listen: false).userType;
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (_userType == 'admin') {
+    final usersProvider = Provider.of<UsersProvider>(context, listen: false);
+    if (usersProvider.getUserType() == 'admin') {
       return CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
           items: const <BottomNavigationBarItem>[

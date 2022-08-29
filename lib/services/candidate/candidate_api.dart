@@ -18,79 +18,10 @@ class CandidateApi {
     }
   }
 
-  Future<bool?> checkIfApproved() async {
+  Future setCandidateAsApproved({required CandidateData candidateData}) async {
     try {
-      return await FirebaseFirestore.instance
-          .collection('candidates')
-          .doc(getCurrentUid())
-          .get()
-          .then((value) => value.data()!['isApproved']);
-    } on PlatformException {
-      return null;
-    }
-  }
 
-  Future<List<CandidateData>?> getPendingCandidatesData() async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('candidates')
-          .limit(20)
-          .get();
-
-      return snapshot.docs
-          .map(
-            (candidateDoc) => CandidateData.fromJson(
-              candidateDoc.data(),
-            ),
-          )
-          .toList();
-    } on PlatformException {
-      return null;
-    }
-  }
-
-  Future<List<CandidateData>?> getCandidatesData(
-      {required String constituency}) async {
-    try {
-      final snapshot = await FirebaseFirestore.instance
-          .collection('candidates')
-          .where(
-            'constituency',
-            isEqualTo: constituency,
-          )
-          .limit(20)
-          .get();
-
-      return snapshot.docs
-          .map(
-            (candidateDoc) => CandidateData.fromJson(
-              candidateDoc.data(),
-            ),
-          )
-          .toList();
-    } on PlatformException {
-      return null;
-    }
-  }
-
-  Future<CandidateData?> getPendingCandidateData({required String uid}) async {
-    try {
-      final candidateDoc = await FirebaseFirestore.instance
-          .collection('candidates')
-          .doc(uid)
-          .get();
-
-      return CandidateData.fromJson(candidateDoc.data());
-    } on PlatformException {
-      return null;
-    }
-  }
-
-  Future setCandidateAsApproved({required String uid}) async {
-    try {
-      CandidateData? candidateData = await getPendingCandidateData(uid: uid);
-
-      if (candidateData!.isApproved == true) {
+      if (candidateData.isApproved == true) {
         candidateData.isApproved = false;
       } else if (candidateData.isApproved == false) {
         candidateData.isApproved = true;
@@ -98,7 +29,7 @@ class CandidateApi {
 
       await FirebaseFirestore.instance
           .collection('candidates')
-          .doc(uid)
+          .doc(candidateData.uid)
           .set(candidateData.toJson());
     } on PlatformException {
       return null;

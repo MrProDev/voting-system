@@ -99,8 +99,8 @@ class VotingSystem extends StatelessWidget {
           ForgotPasswordScreen.route: (p0) => const ForgotPasswordScreen(),
           ApplyCandidateScreen.route: (p0) => const ApplyCandidateScreen(),
           ShowUsersScreen.route: (p0) => const ShowUsersScreen(),
-          PickPollingTimeScreen.route:(p0) => const PickPollingTimeScreen(),
-          ApproveCandidatesScreen.route:(p0) => const ApproveCandidatesScreen()
+          PickPollingTimeScreen.route: (p0) => const PickPollingTimeScreen(),
+          ApproveCandidatesScreen.route: (p0) => const ApproveCandidatesScreen()
         },
         initialRoute: '/',
       ),
@@ -138,8 +138,16 @@ class AuthPage extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SplashWidget();
               } else if (snapshot.hasError) {
-                return const CupertinoPageScaffold(
-                  child: Center(
+                return CupertinoPageScaffold(
+                  navigationBar: CupertinoNavigationBar(
+                    leading: CupertinoButton(
+                      child: const Text('Logout'),
+                      onPressed: () {
+                        FirebaseAuth.instance.signOut();
+                      },
+                    ),
+                  ),
+                  child: const Center(
                     child: Text('Error Loading Data...'),
                   ),
                 );
