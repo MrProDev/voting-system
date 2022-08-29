@@ -49,13 +49,13 @@ class VoteApi {
     required BuildContext context,
   }) async {
     try {
-      final commonApi = Provider.of<UserApi>(context, listen: false);
+      final userApi = Provider.of<UserApi>(context, listen: false);
 
-      UserData? userData = await commonApi.getUserData();
+      UserData? userData = await userApi.getUserData(uid: FirebaseAuth.instance.currentUser!.uid);
 
       userData!.hasVoted = true;
 
-      await commonApi.setUserData(userData: userData);
+      await userApi.setUserAsCandidate(userData: userData);
     } on PlatformException {
       return null;
     }

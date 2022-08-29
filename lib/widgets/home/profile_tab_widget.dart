@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/providers/candidate_provider.dart';
+import 'package:voting_system/providers/countdown_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/services/auth/login_auth_api.dart';
 import 'package:voting_system/screens/profile/apply_candidate_screen.dart';
@@ -264,6 +265,29 @@ class ProfileTabWidget extends StatelessWidget {
                           context,
                           listen: false,
                         );
+                        final usersProvider = Provider.of<UsersProvider>(
+                          context,
+                          listen: false,
+                        );
+
+                        final candidateProvider =
+                            Provider.of<CandidateProvider>(
+                          context,
+                          listen: false,
+                        );
+
+                        final countdownProvider =
+                            Provider.of<CountdownProvider>(
+                          context,
+                          listen: false,
+                        );
+
+                        usersProvider.currentUserAsNull();
+                        usersProvider.usersAsNull();
+                        candidateProvider.currentCandidateAsNull();
+
+                        countdownProvider.timerAsNull();
+                        countdownProvider.warningMessageAsNull();
 
                         await loginAuthApi.signOut();
                       },

@@ -12,23 +12,31 @@ class CountdownProvider extends ChangeNotifier {
   Duration get duration => _duration!;
   String get warningMessage => _warningMessage;
 
-  set setWarningMessage(String newMessage) {
-    _warningMessage = newMessage;
-    notifyListeners();
+  void durationAsNull() {
+    _duration = null;
+  }
+
+  void warningMessageAsNull() {
+    _warningMessage = '';
+  }
+
+  void timerAsNull() {
+    _timer?.cancel();
+    _timer = null;
   }
 
   void startTimer() {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (_) {
-        final seconds = duration.inSeconds - 1;
+      final seconds = _duration!.inSeconds - 1;
         final hours = duration.inHours;
-        if (hours >= 8){
+        if (hours >= 8) {
           _warningMessage = 'Polling is not started yet!';
         }
         if (seconds <= 0) {
           _warningMessage = 'Polling time is ended!';
-          
+
           _timer!.cancel();
         } else {
           _warningMessage = '';
@@ -46,6 +54,4 @@ class CountdownProvider extends ChangeNotifier {
 
     notifyListeners();
   }
-
-  String twoDigits(int n) => n.toString().padLeft(2, '0');
 }

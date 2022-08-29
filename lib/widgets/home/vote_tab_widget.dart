@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/providers/candidate_provider.dart';
 import 'package:voting_system/providers/countdown_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/models/candidate_data.dart';
@@ -16,8 +15,6 @@ class VoteTabWidget extends StatelessWidget {
     final countdownProvider =
         Provider.of<CountdownProvider>(context, listen: false);
     final userProvider = Provider.of<UsersProvider>(context, listen: false);
-    final candidateProvider =
-        Provider.of<CandidateProvider>(context, listen: false);
     return CupertinoPageScaffold(
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -25,7 +22,6 @@ class VoteTabWidget extends StatelessWidget {
           const CupertinoSliverNavigationBar(
             largeTitle: Text('Vote'),
           ),
-          
           SliverFillRemaining(
             child: MediaQuery.removePadding(
               removeTop: true,
@@ -39,7 +35,7 @@ class VoteTabWidget extends StatelessWidget {
                     )
                     .where(
                       'userType',
-                      whereIn: ['user', 'candidate'],
+                      isEqualTo: 'candidate',
                     )
                     .snapshots()
                     .map(
@@ -70,7 +66,10 @@ class VoteTabWidget extends StatelessWidget {
                           .where(
                             'constituency',
                             isEqualTo:
-                                candidateProvider.getCandidateConstituency(),
+                                userProvider.getConstituency(),
+                          ).where(
+                            'isApproved',
+                            isEqualTo: true,
                           )
                           .snapshots()
                           .map(

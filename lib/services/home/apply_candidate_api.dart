@@ -19,9 +19,9 @@ class ApplyCandidateApi {
     required BuildContext context,
   }) async {
     final userApi = Provider.of<UserApi>(context, listen: false);
-    UserData? userData = await userApi.getUserData();
+    UserData? userData = await userApi.getUserData(uid: FirebaseAuth.instance.currentUser!.uid);
 
-    await userApi.setUserData(userData: userData);
+    await userApi.setUserAsApplied(userData: userData);
 
     String? imageUrl = await uploadPartyImage(image: image);
     String? constituency = userData!.constituency;

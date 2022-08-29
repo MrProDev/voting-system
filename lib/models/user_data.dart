@@ -7,6 +7,7 @@ class UserData {
   String? imageUrl;
   String? userType;
   bool? hasVoted;
+  bool? hasApplied;
 
   UserData({
     required this.uid,
@@ -17,6 +18,7 @@ class UserData {
     required this.imageUrl,
     required this.userType,
     required this.hasVoted,
+    required this.hasApplied,
   });
 
   factory UserData.fromJson(Map<String, dynamic>? json) => UserData(
@@ -28,6 +30,7 @@ class UserData {
         imageUrl: json["imageUrl"],
         userType: json["userType"],
         hasVoted: json["hasVoted"],
+        hasApplied: json["hasApplied"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -39,5 +42,6 @@ class UserData {
         "imageUrl": imageUrl,
         "userType": userType,
         "hasVoted": hasVoted,
+        "hasApplied": hasApplied,
       };
 }

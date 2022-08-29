@@ -6,11 +6,11 @@ import 'package:voting_system/models/user_data.dart';
 class UserApi {
   String getCurrentUid() => FirebaseAuth.instance.currentUser!.uid;
 
-  Future<UserData?> getUserData() async {
+  Future<UserData?> getUserData({required String uid}) async {
     try {
       final userdoc = await FirebaseFirestore.instance
           .collection('users')
-          .doc(getCurrentUid())
+          .doc(uid)
           .get();
 
       return UserData.fromJson(userdoc.data());
@@ -19,9 +19,22 @@ class UserApi {
     }
   }
 
-  Future setUserData({required UserData? userData}) async {
+  Future setUserAsCandidate({required UserData? userData}) async {
     try {
-      userData!.userType = 'candidate';
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userData!.uid)
+          .set(
+            userData.toJson(),
+          );
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  Future setUserAsApplied({required UserData? userData}) async {
+    try {
+      userData!.hasApplied = true;
       await FirebaseFirestore.instance
           .collection('users')
           .doc(getCurrentUid())

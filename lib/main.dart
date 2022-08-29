@@ -138,17 +138,10 @@ class AuthPage extends StatelessWidget {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const SplashWidget();
               } else if (snapshot.hasError) {
-                return CupertinoPageScaffold(
-                  navigationBar: CupertinoNavigationBar(
-                    leading: CupertinoButton(
-                      child: const Text('Logout'),
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut();
-                      },
-                    ),
-                  ),
-                  child: const Center(
+                return const CupertinoPageScaffold(
+                  child: Center(
                     child: Text('Error Loading Data...'),
+                    
                   ),
                 );
               } else {

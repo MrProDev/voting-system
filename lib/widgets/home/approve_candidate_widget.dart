@@ -58,6 +58,7 @@ class _ApproveCandidateWidgetState extends State<ApproveCandidateWidget> {
             onPressed: () async {
               final candidateApi =
                   Provider.of<CandidateApi>(context, listen: false);
+
               CandidateData candidateData = CandidateData(
                   uid: widget.uid,
                   partyName: widget.name,
@@ -67,7 +68,12 @@ class _ApproveCandidateWidgetState extends State<ApproveCandidateWidget> {
               setState(() {
                 _isLoading = true;
               });
-              await candidateApi.setCandidateAsApproved(candidateData: candidateData);
+
+              await candidateApi.setCandidateAsApproved(
+                context: context,
+                uid: widget.uid,
+                candidateData: candidateData,
+              );
               setState(() {
                 _isLoading = false;
               });

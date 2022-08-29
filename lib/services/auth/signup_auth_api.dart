@@ -48,6 +48,7 @@ class SignUpAuthApi {
       cnic: cnic,
       userType: "user",
       hasVoted: false,
+      hasApplied: false,
     );
     try {
       final DocumentReference<Map<String, dynamic>> doc = FirebaseFirestore

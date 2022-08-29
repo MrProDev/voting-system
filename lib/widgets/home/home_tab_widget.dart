@@ -14,12 +14,8 @@ class HomeTabWidget extends StatefulWidget {
 }
 
 class _HomeTabWidgetState extends State<HomeTabWidget> {
-
-
-
   @override
   void initState() {
-    
     Provider.of<CountdownProvider>(context, listen: false).startTimer();
     super.initState();
   }
@@ -63,9 +59,8 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final usersProvider =
-        Provider.of<UsersProvider>(context, listen: false);
-    
+    final usersProvider = Provider.of<UsersProvider>(context, listen: false);
+
     return CupertinoPageScaffold(
       child: CustomScrollView(
         slivers: [
@@ -81,144 +76,138 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
           ),
           SliverFillRemaining(
             child: MediaQuery.removePadding(
-                    context: context,
-                    removeTop: true,
-                    child: ListView(
-                      shrinkWrap: true,
-                      primary: false,
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.symmetric(
-                            vertical: 20,
-                          ),
-                          child: Consumer<CountdownProvider>(
-                            builder: (context, value, child) {
-                              return Column(
-                                children: [
-                                  const Text(
-                                    'Remaining Polling Time',
-                                    style: TextStyle(
-                                      fontSize: 24,
-                                      color:
-                                          CupertinoDynamicColor.withBrightness(
-                                        color: CupertinoColors.black,
-                                        darkColor: CupertinoColors.white,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      buildTimerCard(
-                                          time: twoDigits(value.duration.inHours
-                                              .remainder(60)),
-                                          header: 'Hours'),
-                                      const SizedBox(width: 32),
-                                      buildTimerCard(
-                                          time: twoDigits(value
-                                              .duration.inMinutes
-                                              .remainder(60)),
-                                          header: 'Minutes'),
-                                      const SizedBox(width: 32),
-                                      buildTimerCard(
-                                          time: twoDigits(value
-                                              .duration.inSeconds
-                                              .remainder(60)),
-                                          header: 'Seconds'),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 12,
-                                  ),
-                                  Text(
-                                    value.warningMessage,
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                        usersProvider.getUserType() == 'admin'
-                            ? Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
+              context: context,
+              removeTop: true,
+              child: ListView(
+                shrinkWrap: true,
+                primary: false,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(
+                      vertical: 20,
+                    ),
+                    child: Consumer<CountdownProvider>(
+                      builder: (context, value, child) {
+                        return Column(
+                          children: [
+                            const Text(
+                              'Remaining Polling Time',
+                              style: TextStyle(
+                                fontSize: 24,
+                                color: CupertinoDynamicColor.withBrightness(
+                                  color: CupertinoColors.black,
+                                  darkColor: CupertinoColors.white,
                                 ),
-                                child: CupertinoButton.filled(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () => Navigator.pushNamed(
-                                      context, PickPollingTimeScreen.route),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Text(
-                                        'Pick Polling Time',
-                                        style: TextStyle(
-                                          color: CupertinoColors.white,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        usersProvider.getUserType() == 'candidate'
-                            ? Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: CupertinoButton.filled(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, ShowUsersScreen.route);
-                                  },
-                                  child: const Text(
-                                    'Show Users',
-                                    style: TextStyle(
-                                      color: CupertinoColors.white,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(),
-                        usersProvider.getUserType() == 'admin'
-                            ? Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 12),
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                ),
-                                child: CupertinoButton.filled(
-                                  padding: EdgeInsets.zero,
-                                  onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, ApproveCandidatesScreen.route);
-                                  },
-                                  child: const Text(
-                                    'Approve Candidates',
-                                    style: TextStyle(
-                                      color: CupertinoColors.white,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : const SizedBox(),
-                      ],
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                buildTimerCard(
+                                    time: twoDigits(
+                                        value.duration.inHours.remainder(60)),
+                                    header: 'Hours'),
+                                const SizedBox(width: 32),
+                                buildTimerCard(
+                                    time: twoDigits(
+                                        value.duration.inMinutes.remainder(60)),
+                                    header: 'Minutes'),
+                                const SizedBox(width: 32),
+                                buildTimerCard(
+                                    time: twoDigits(
+                                        value.duration.inSeconds.remainder(60)),
+                                    header: 'Seconds'),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              value.warningMessage,
+                            ),
+                          ],
+                        );
+                      },
                     ),
                   ),
+                  usersProvider.getUserType() == 'admin'
+                      ? Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () => Navigator.pushNamed(
+                                context, PickPollingTimeScreen.route),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Text(
+                                  'Pick Polling Time',
+                                  style: TextStyle(
+                                    color: CupertinoColors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  usersProvider.getUserType() == 'candidate'
+                      ? Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, ShowUsersScreen.route);
+                            },
+                            child: const Text(
+                              'Show Users',
+                              style: TextStyle(
+                                color: CupertinoColors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                  usersProvider.getUserType() == 'admin'
+                      ? Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, ApproveCandidatesScreen.route);
+                            },
+                            child: const Text(
+                              'Approve Candidates',
+                              style: TextStyle(
+                                color: CupertinoColors.white,
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
+            ),
           ),
         ],
       ),

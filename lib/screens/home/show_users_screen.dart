@@ -6,10 +6,17 @@ import 'package:voting_system/providers/candidate_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/widgets/home/user_widget.dart';
 
-class ShowUsersScreen extends StatelessWidget {
+class ShowUsersScreen extends StatefulWidget {
   const ShowUsersScreen({Key? key}) : super(key: key);
 
   static const route = '/ShowUsersScreen';
+
+  @override
+  State<ShowUsersScreen> createState() => _ShowUsersScreenState();
+}
+
+class _ShowUsersScreenState extends State<ShowUsersScreen> {
+  String _name = '';
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,9 @@ class ShowUsersScreen extends StatelessWidget {
       child: CustomScrollView(
         slivers: [
           CupertinoSliverRefreshControl(
-            onRefresh: () async {},
+            onRefresh: () async {
+              await userProvider.getCurrentUser(context: context);
+            },
           ),
           SliverFillRemaining(
             child: !candidateProvider.isApproved()
@@ -44,7 +53,11 @@ class ShowUsersScreen extends StatelessWidget {
                           vertical: 8,
                         ),
                         child: CupertinoSearchTextField(
-                          onChanged: (name) {},
+                          onChanged: (name) {
+                            setState(() {
+                              _name = name;
+                            });
+                          },
                         ),
                       ),
                       StreamBuilder<List<UserData>>(
@@ -91,13 +104,30 @@ class ShowUsersScreen extends StatelessWidget {
                                   const SizedBox(
                                 height: 10,
                               ),
-                              itemBuilder: (context, index) => UserWidget(
-                                name: users[index].name!,
-                                constituency: users[index].constituency!,
-                                cnic: users[index].cnic!,
-                                email: users[index].email!,
-                                imageUrl: users[index].imageUrl!,
-                              ),
+                              itemBuilder: (context, index) {
+                                if (users[index]
+                                    .name!
+                                    .toLowerCase()
+                                    .contains(_name.toLowerCase())) {
+                                  return UserWidget(
+                                    name: users[index].name!,
+                                    constituency: users[index].constituency!,
+                                    cnic: users[index].cnic!,
+                                    email: users[index].email!,
+                                    imageUrl: users[index].imageUrl!,
+                                  );
+                                } else if (_name.isEmpty) {
+                                  return UserWidget(
+                                    name: users[index].name!,
+                                    constituency: users[index].constituency!,
+                                    cnic: users[index].cnic!,
+                                    email: users[index].email!,
+                                    imageUrl: users[index].imageUrl!,
+                                  );
+                                } else {
+                                  return const SizedBox();
+                                }
+                              },
                             );
                           }
                         },
