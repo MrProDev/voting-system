@@ -1,68 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/candidate/candidate_api.dart';
-import 'package:voting_system/firebase/home/countdown_time_api.dart';
-import 'package:voting_system/firebase/users/user_api.dart';
+import 'package:voting_system/providers/candidate_provider.dart';
+import 'package:voting_system/providers/countdown_provider.dart';
+import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/models/candidate_data.dart';
 import 'package:voting_system/models/user_data.dart';
-import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/widgets/vote/candidate_widget.dart';
 
-class VoteTabWidget extends StatefulWidget {
+class VoteTabWidget extends StatelessWidget {
   const VoteTabWidget({Key? key}) : super(key: key);
 
   @override
-  State<VoteTabWidget> createState() => _VoteTabWidgetState();
-}
-
-class _VoteTabWidgetState extends State<VoteTabWidget> {
-  List<CandidateData>? _candidatesData;
-  List<UserData>? _usersData;
-  int? _seconds;
-
-  bool _isLoading = false;
-
-  @override
-  void initState() {
-    _setData();
-    super.initState();
-  }
-
-  _setData() {
-    final usersData = Provider.of<LoadData>(context, listen: false).usersData;
-    final candidatesData =
-        Provider.of<LoadData>(context, listen: false).candidatesData;
-    final duration = Provider.of<LoadData>(context, listen: false).duration;
-    setState(() {
-      _usersData = usersData;
-      _candidatesData = candidatesData;
-      _seconds = duration!.inSeconds;
-    });
-  }
-
-  _getUpdatedData() async {
-    final userApi = Provider.of<UserApi>(context, listen: false);
-    final countdownTimeApi =
-        Provider.of<CountdownTimeApi>(context, listen: false);
-    final candidateApi = Provider.of<CandidateApi>(context, listen: false);
-    setState(() {
-      _isLoading = true;
-    });
-    final candidatesData =
-        await candidateApi.getCandidatesData(context: context);
-    final usersData = await userApi.getUsersData(context: context);
-    final duration = await countdownTimeApi.getCountdownTimer();
-    setState(() {
-      _candidatesData = candidatesData;
-      _usersData = usersData;
-      _seconds = duration!.inSeconds;
-      _isLoading = false;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final countdownProvider =
+        Provider.of<CountdownProvider>(context, listen: false);
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
+    final candidateProvider =
+        Provider.of<CandidateProvider>(context, listen: false);
     return CupertinoPageScaffold(
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -71,37 +27,100 @@ class _VoteTabWidgetState extends State<VoteTabWidget> {
             largeTitle: Text('Vote'),
           ),
           CupertinoSliverRefreshControl(
-            onRefresh: () async {
-              _getUpdatedData();
-            },
+            onRefresh: () async {},
           ),
           SliverFillRemaining(
-            child: _isLoading
-                ? const Center(
-                    child: CupertinoActivityIndicator(),
-                  )
-                : MediaQuery.removePadding(
-                    removeTop: true,
-                    context: context,
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      primary: false,
-                      itemCount: _candidatesData!.length,
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 10,
-                      ),
-                      itemBuilder: (context, index) => CandidateWidget(
-                        seconds: _seconds!,
-                        userUid: FirebaseAuth.instance.currentUser!.uid,
-                        candidateUid: _candidatesData![index].uid!,
-                        name: _usersData![index].name!,
-                        constituency: _candidatesData![index].constituency!,
-                        imageUrl: _usersData![index].imageUrl!,
-                        partyName: _candidatesData![index].partyName!,
-                        partyImageUrl: _candidatesData![index].imageUrl!,
-                      ),
+            child: MediaQuery.removePadding(
+              removeTop: true,
+              context: context,
+              child: StreamBuilder<List<UserData>>(
+                stream: FirebaseFirestore.instance
+                    .collection('users')
+                    .where(
+                      'constituency',
+                      isEqualTo: userProvider.getConstituency(),
+                    )
+                    .snapshots()
+                    .map(
+                      (snapshot) => snapshot.docs
+                          .map(
+                            (doc) => UserData.fromJson(
+                              doc.data(),
+                            ),
+                          )
+                          .toList(),
                     ),
-                  ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CupertinoActivityIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text(
+                        snapshot.error.toString(),
+                      ),
+                    );
+                  } else {
+                    final users = snapshot.data;
+                    return StreamBuilder<List<CandidateData>>(
+                      stream: FirebaseFirestore.instance
+                          .collection('candidates')
+                          .where(
+                            'constituency',
+                            isEqualTo:
+                                candidateProvider.getCandidateConstituency(),
+                          )
+                          .snapshots()
+                          .map(
+                            (snapshot) => snapshot.docs
+                                .map(
+                                  (doc) => CandidateData.fromJson(
+                                    doc.data(),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CupertinoActivityIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              snapshot.error.toString(),
+                            ),
+                          );
+                        } else {
+                          final candidatesData = snapshot.data;
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            primary: false,
+                            itemCount: candidatesData!.length,
+                            separatorBuilder: (context, index) =>
+                                const SizedBox(
+                              height: 10,
+                            ),
+                            itemBuilder: (context, index) => CandidateWidget(
+                              seconds: countdownProvider.duration.inSeconds,
+                              userUid: FirebaseAuth.instance.currentUser!.uid,
+                              candidateUid: candidatesData[index].uid!,
+                              name: users![index].name!,
+                              constituency: candidatesData[index].constituency!,
+                              imageUrl: users[index].imageUrl!,
+                              partyName: candidatesData[index].partyName!,
+                              partyImageUrl: candidatesData[index].imageUrl!,
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
           ),
         ],
       ),

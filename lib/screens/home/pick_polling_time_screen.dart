@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/home/countdown_time_api.dart';
+import 'package:voting_system/services/home/countdown_time_api.dart';
 
 class PickPollingTimeScreen extends StatefulWidget {
   const PickPollingTimeScreen({Key? key}) : super(key: key);

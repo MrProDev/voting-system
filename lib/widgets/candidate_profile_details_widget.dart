@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/vote/vote_api.dart';
+import 'package:voting_system/services/vote/vote_api.dart';
 
 class CandidateProfileDetailsWidget extends StatefulWidget {
   const CandidateProfileDetailsWidget({

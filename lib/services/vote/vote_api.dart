@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/users/user_api.dart';
+import 'package:voting_system/services/users/user_api.dart';
 import 'package:voting_system/models/user_data.dart';
 
 class VoteApi {

@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/users/user_api.dart';
 import 'package:voting_system/models/candidate_data.dart';
 
 class CandidateApi {
@@ -53,14 +50,13 @@ class CandidateApi {
   }
 
   Future<List<CandidateData>?> getCandidatesData(
-      {required BuildContext context}) async {
+      {required String constituency}) async {
     try {
-      final commonApi = Provider.of<UserApi>(context, listen: false);
       final snapshot = await FirebaseFirestore.instance
           .collection('candidates')
           .where(
             'constituency',
-            isEqualTo: await commonApi.getConstituency(),
+            isEqualTo: constituency,
           )
           .limit(20)
           .get();

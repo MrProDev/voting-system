@@ -2,15 +2,17 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/auth/forgot_password_api.dart';
-import 'package:voting_system/firebase/auth/login_auth_api.dart';
-import 'package:voting_system/firebase/auth/signup_auth_api.dart';
-import 'package:voting_system/firebase/auth/verify_email_api.dart';
-import 'package:voting_system/firebase/candidate/candidate_api.dart';
-import 'package:voting_system/firebase/users/user_api.dart';
-import 'package:voting_system/firebase/home/apply_candidate_api.dart';
-import 'package:voting_system/firebase/home/countdown_time_api.dart';
-import 'package:voting_system/firebase/vote/vote_api.dart';
+import 'package:voting_system/providers/candidate_provider.dart';
+import 'package:voting_system/providers/users_provider.dart';
+import 'package:voting_system/services/auth/forgot_password_api.dart';
+import 'package:voting_system/services/auth/login_auth_api.dart';
+import 'package:voting_system/services/auth/signup_auth_api.dart';
+import 'package:voting_system/services/auth/verify_email_api.dart';
+import 'package:voting_system/services/candidate/candidate_api.dart';
+import 'package:voting_system/services/users/user_api.dart';
+import 'package:voting_system/services/home/apply_candidate_api.dart';
+import 'package:voting_system/services/home/countdown_time_api.dart';
+import 'package:voting_system/services/vote/vote_api.dart';
 import 'package:voting_system/firebase_options.dart';
 import 'package:voting_system/providers/countdown_provider.dart';
 import 'package:voting_system/providers/load_data.dart';
@@ -18,7 +20,7 @@ import 'package:voting_system/screens/auth/forgot_password_screen.dart';
 import 'package:voting_system/screens/auth/login_screen.dart';
 import 'package:voting_system/screens/auth/signup_screen.dart';
 import 'package:voting_system/screens/auth/verify_email_screen.dart';
-import 'package:voting_system/screens/home/apply_candidate_screen.dart';
+import 'package:voting_system/screens/profile/apply_candidate_screen.dart';
 import 'package:voting_system/screens/home/approve_candidates_screen.dart';
 import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
@@ -72,6 +74,12 @@ class VotingSystem extends StatelessWidget {
         ),
         ChangeNotifierProvider<CountdownProvider>(
           create: (_) => CountdownProvider(),
+        ),
+        ChangeNotifierProvider<UsersProvider>(
+          create: (_) => UsersProvider(),
+        ),
+        ChangeNotifierProvider<CandidateProvider>(
+          create: (_) => CandidateProvider(),
         ),
       ],
       child: CupertinoApp(

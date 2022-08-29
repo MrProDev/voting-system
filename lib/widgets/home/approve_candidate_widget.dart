@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/candidate/candidate_api.dart';
+import 'package:voting_system/services/candidate/candidate_api.dart';
 
 class ApproveCandidateWidget extends StatefulWidget {
   const ApproveCandidateWidget({

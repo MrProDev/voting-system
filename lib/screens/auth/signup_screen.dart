@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/common/common_data.dart';
-import 'package:voting_system/firebase/auth/signup_auth_api.dart';
+import 'package:voting_system/services/auth/signup_auth_api.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);

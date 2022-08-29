@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/home/apply_candidate_api.dart';
+import 'package:voting_system/services/home/apply_candidate_api.dart';
 
 class ApplyCandidateScreen extends StatefulWidget {
   const ApplyCandidateScreen({Key? key}) : super(key: key);
@@ -49,7 +49,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         middle: Text('Apply for Candidateship'),
-        previousPageTitle: 'Home',
+        previousPageTitle: 'Profile',
       ),
       child: Form(
         key: _formKey,

@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/candidate/candidate_api.dart';
-import 'package:voting_system/firebase/users/user_api.dart';
+import 'package:voting_system/providers/users_provider.dart';
+import 'package:voting_system/services/candidate/candidate_api.dart';
 import 'package:voting_system/models/candidate_data.dart';
-import 'package:voting_system/models/user_data.dart';
 import 'package:voting_system/providers/load_data.dart';
 import 'package:voting_system/widgets/home/approve_candidate_widget.dart';
 
@@ -19,44 +18,41 @@ class ApproveCandidatesScreen extends StatefulWidget {
 
 class _ApproveCandidatesScreenState extends State<ApproveCandidatesScreen> {
   List<CandidateData>? _candidatesData;
-  List<UserData>? _usersData;
 
   bool _isLoading = false;
 
   @override
   void initState() {
     _setData();
+    setState(() {
+      _candidatesData = Provider.of<LoadData>(context, listen: false).pendingCandidatesData;
+    });
+    
+        
+
     super.initState();
   }
 
-  _setData() {
-    final usersData =
-        Provider.of<LoadData>(context, listen: false).pendingUsersData;
-    final candidatesData =
-        Provider.of<LoadData>(context, listen: false).pendingCandidatesData;
-    setState(() {
-      _usersData = usersData;
-      _candidatesData = candidatesData;
-    });
+  _setData() async {
+    await Provider.of<UsersProvider>(context, listen: false)
+        .getUsers(context: context);
   }
 
   _getUpdatedData() async {
-    final userApi = Provider.of<UserApi>(context, listen: false);
     final candidateApi = Provider.of<CandidateApi>(context, listen: false);
     setState(() {
       _isLoading = true;
     });
     final candidatesData = await candidateApi.getPendingCandidatesData();
-    final usersData = await userApi.getPendingCandidatesData();
     setState(() {
       _candidatesData = candidatesData;
-      _usersData = usersData;
       _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final userProvider = Provider.of<UsersProvider>(context, listen: false);
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         middle: Text('Approve Candidates'),
@@ -91,20 +87,22 @@ class _ApproveCandidatesScreenState extends State<ApproveCandidatesScreen> {
                               _getUpdatedData();
                             },
                             onChanged: (name) {
-                              setState(() {
-                                _usersData = _usersData!
-                                    .where((user) => user.name!
-                                        .toLowerCase()
-                                        .contains(name.toLowerCase()))
-                                    .toList();
-                              });
+                              setState(
+                                () {
+                                  // userProvider.pendingUsers = userProvider.pendingUsers!
+                                  //     .where((user) => user.name!
+                                  //         .toLowerCase()
+                                  //         .contains(name.toLowerCase()))
+                                  //     .toList();
+                                },
+                              );
                             },
                           ),
                         ),
                         ListView.separated(
                           shrinkWrap: true,
                           primary: false,
-                          itemCount: _usersData!.length,
+                          itemCount: userProvider.pendingUsers!.length,
                           separatorBuilder: (context, index) => const SizedBox(
                             height: 10,
                           ),
@@ -112,9 +110,10 @@ class _ApproveCandidatesScreenState extends State<ApproveCandidatesScreen> {
                               ApproveCandidateWidget(
                             uid: _candidatesData![index].uid!,
                             isApproved: _candidatesData![index].isApproved!,
-                            name: _usersData![index].name!,
+                            name: userProvider.pendingUsers![index].name!,
                             constituency: _candidatesData![index].constituency!,
-                            imageUrl: _usersData![index].imageUrl!,
+                            imageUrl:
+                                userProvider.pendingUsers![index].imageUrl!,
                           ),
                         ),
                       ],

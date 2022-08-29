@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/firebase/auth/login_auth_api.dart';
-import 'package:voting_system/firebase/auth/verify_email_api.dart';
+import 'package:voting_system/services/auth/login_auth_api.dart';
+import 'package:voting_system/services/auth/verify_email_api.dart';
 import 'package:voting_system/screens/home/home_screen.dart';
 
 class VerifyEmailScreen extends StatefulWidget {
