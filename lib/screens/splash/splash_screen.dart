@@ -46,12 +46,6 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(
-              height: 64,
-            ),
-            CupertinoActivityIndicator(
-              radius: 16,
-            ),
           ],
         ),
       ),

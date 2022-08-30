@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:voting_system/widgets/candidate_profile_details_widget.dart';
+import 'package:voting_system/widgets/vote/candidate_profile_details_widget.dart';
 
 class CandidateWidget extends StatelessWidget {
   const CandidateWidget({

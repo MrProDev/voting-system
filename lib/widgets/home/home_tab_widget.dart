@@ -4,6 +4,7 @@ import 'package:voting_system/providers/countdown_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/screens/home/approve_candidates_screen.dart';
 import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
+import 'package:voting_system/screens/home/show_results_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 
 class HomeTabWidget extends StatefulWidget {
@@ -234,7 +235,10 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                                         ),
                                         child: CupertinoButton.filled(
                                           padding: EdgeInsets.zero,
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            Navigator.pushNamed(context,
+                                                ShowResultsScreen.route);
+                                          },
                                           child: const Text(
                                             'Show Results',
                                             style: TextStyle(

@@ -4,13 +4,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/providers/candidate_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
+import 'package:voting_system/screens/home/show_results_screen.dart';
 import 'package:voting_system/services/auth/forgot_password_api.dart';
 import 'package:voting_system/services/auth/login_auth_api.dart';
 import 'package:voting_system/services/auth/signup_auth_api.dart';
 import 'package:voting_system/services/auth/verify_email_api.dart';
 import 'package:voting_system/services/candidate/candidate_api.dart';
 import 'package:voting_system/services/users/user_api.dart';
-import 'package:voting_system/services/home/apply_candidate_api.dart';
+import 'package:voting_system/services/profile/apply_candidate_api.dart';
 import 'package:voting_system/services/home/countdown_time_api.dart';
 import 'package:voting_system/services/vote/vote_api.dart';
 import 'package:voting_system/firebase_options.dart';
@@ -100,7 +101,8 @@ class VotingSystem extends StatelessWidget {
           ApplyCandidateScreen.route: (p0) => const ApplyCandidateScreen(),
           ShowUsersScreen.route: (p0) => const ShowUsersScreen(),
           PickPollingTimeScreen.route: (p0) => const PickPollingTimeScreen(),
-          ApproveCandidatesScreen.route: (p0) => const ApproveCandidatesScreen()
+          ApproveCandidatesScreen.route: (p0) => const ApproveCandidatesScreen(),
+          ShowResultsScreen.route:(p0) => const ShowResultsScreen(),
         },
         initialRoute: '/',
       ),

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:voting_system/services/home/apply_candidate_api.dart';
+import 'package:voting_system/services/profile/apply_candidate_api.dart';
 
 class ApplyCandidateScreen extends StatefulWidget {
   const ApplyCandidateScreen({Key? key}) : super(key: key);
