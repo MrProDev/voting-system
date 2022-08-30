@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,6 +46,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
         source: source,
         maxWidth: 150,
         maxHeight: 150,
+        preferredCameraDevice: CameraDevice.front,
+        imageQuality: 100,
       );
       if (image == null) {
         return;
@@ -374,6 +377,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
             },
             child: const Text(
               'Choose Photo',
+              style: TextStyle(
+                fontSize: 18,
+              ),
+            ),
+          ),
+          CupertinoActionSheetAction(
+            onPressed: () async {
+              final result = await FilePicker.platform.pickFiles(
+                type: FileType.custom,
+                allowedExtensions: ['jpg', 'heic', 'png', 'jpeg'],
+              );
+              if (result == null) return;
+              final file = result.files.first;
+              final tempImageFile = File(file.path!);
+              setState(() {
+                image = tempImageFile;
+              });
+              if (!mounted) return;
+              Navigator.pop(context);
+            },
+            child: const Text(
+              'Browse...',
               style: TextStyle(
                 fontSize: 18,
               ),

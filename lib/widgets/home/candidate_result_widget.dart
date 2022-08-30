@@ -1,6 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
 class CandidateResultWidget extends StatelessWidget {
   const CandidateResultWidget({
@@ -75,10 +75,14 @@ class CandidateResultWidget extends StatelessWidget {
                   children: [
                     Column(
                       children: [
-                        CircleAvatar(
-                          radius: 32,
-                          backgroundImage: NetworkImage(
-                            imageUrl,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(35),
+                          child: CachedNetworkImage(
+                            alignment: Alignment.topCenter,
+                            width: 64,
+                            height: 64,
+                            imageUrl: imageUrl,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         const SizedBox(
@@ -95,10 +99,14 @@ class CandidateResultWidget extends StatelessWidget {
                     ),
                     Column(
                       children: [
-                        CircleAvatar(
-                          radius: 32,
-                          backgroundImage: NetworkImage(
-                            partyImageUrl,
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(35),
+                          child: CachedNetworkImage(
+                            alignment: Alignment.topCenter,
+                            width: 64,
+                            height: 64,
+                            imageUrl: partyImageUrl,
+                            fit: BoxFit.cover,
                           ),
                         ),
                         const SizedBox(

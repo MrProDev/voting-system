@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/providers/candidate_provider.dart';
 import 'package:voting_system/providers/countdown_provider.dart';
@@ -62,10 +62,14 @@ class ProfileTabWidget extends StatelessWidget {
                           },
                           child: Hero(
                             tag: userProvider.currentUser!.uid!,
-                            child: CircleAvatar(
-                              radius: 64,
-                              backgroundImage: NetworkImage(
-                                userProvider.currentUser!.imageUrl!,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(80),
+                              child: CachedNetworkImage(
+                                alignment: Alignment.topCenter,
+                                width: 128,
+                                height: 128,
+                                imageUrl: userProvider.currentUser!.imageUrl!,
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),

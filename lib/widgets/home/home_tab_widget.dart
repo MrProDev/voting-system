@@ -196,61 +196,58 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                     height: 20,
                   ),
                   usersProvider.userType == 'candidate'
-                      ? Column(
-                          children: [
-                            Container(
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                              child: CupertinoButton.filled(
-                                padding: EdgeInsets.zero,
-                                onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, ShowUsersScreen.route);
-                                },
-                                child: const Text(
-                                  'Show Users',
-                                  style: TextStyle(
-                                    color: CupertinoColors.white,
-                                  ),
-                                ),
+                      ? Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          child: CupertinoButton.filled(
+                            padding: EdgeInsets.zero,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, ShowUsersScreen.route);
+                            },
+                            child: const Text(
+                              'Show Users',
+                              style: TextStyle(
+                                color: CupertinoColors.white,
                               ),
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            Consumer<CountdownProvider>(
-                              builder: (context, value, child) {
-                                return value.duration.inSeconds <= 0
-                                    ? Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 12),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  usersProvider.userType == 'candidate' ||
+                          usersProvider.userType == 'admin'
+                      ? Consumer<CountdownProvider>(
+                          builder: (context, value, child) {
+                            return value.duration.inSeconds <= 0
+                                ? Container(
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                    child: CupertinoButton.filled(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                            context, ShowResultsScreen.route);
+                                      },
+                                      child: const Text(
+                                        'Show Results',
+                                        style: TextStyle(
+                                          color: CupertinoColors.white,
                                         ),
-                                        child: CupertinoButton.filled(
-                                          padding: EdgeInsets.zero,
-                                          onPressed: () {
-                                            Navigator.pushNamed(context,
-                                                ShowResultsScreen.route);
-                                          },
-                                          child: const Text(
-                                            'Show Results',
-                                            style: TextStyle(
-                                              color: CupertinoColors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox();
-                              },
-                            ),
-                          ],
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox();
+                          },
                         )
                       : const SizedBox(),
                 ],

@@ -1,4 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 
 class UserWidget extends StatelessWidget {
   const UserWidget({
@@ -18,21 +19,42 @@ class UserWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundImage: NetworkImage(imageUrl),
-          radius: 28,
-        ),
-        title: Text(
-          name,
-        ),
-        subtitle: Text(
-          email,
-        ),
-        trailing: Text(
-          constituency,
-        ),
+    return Container(
+      padding: const EdgeInsets.all(12),
+      color: CupertinoColors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(35),
+            child: CachedNetworkImage(
+              alignment: Alignment.topCenter,
+              width: 64,
+              height: 64,
+              imageUrl: imageUrl,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              Text(
+                email,
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+              )
+            ],
+          ),
+          Text(constituency),
+        ],
       ),
     );
   }

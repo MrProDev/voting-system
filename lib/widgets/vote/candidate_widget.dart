@@ -1,12 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:voting_system/widgets/vote/candidate_profile_details_widget.dart';
 
 class CandidateWidget extends StatelessWidget {
   const CandidateWidget({
     Key? key,
-    
-  required this.seconds,
+    required this.seconds,
     required this.userUid,
     required this.candidateUid,
     required this.name,
@@ -40,10 +39,14 @@ class CandidateWidget extends StatelessWidget {
         children: [
           Hero(
             tag: candidateUid,
-            child: CircleAvatar(
-              radius: 48,
-              backgroundImage: NetworkImage(
-                imageUrl,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(35),
+              child: CachedNetworkImage(
+                alignment: Alignment.topCenter,
+                width: 64,
+                height: 64,
+                imageUrl: imageUrl,
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -55,6 +58,7 @@ class CandidateWidget extends StatelessWidget {
             ),
           ),
           CupertinoButton(
+            padding: EdgeInsets.zero,
             onPressed: () => Navigator.push(
               context,
               CupertinoPageRoute(

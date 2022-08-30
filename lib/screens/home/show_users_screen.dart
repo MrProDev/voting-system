@@ -56,6 +56,7 @@ class _ShowUsersScreenState extends State<ShowUsersScreen> {
                               vertical: 8,
                             ),
                             child: CupertinoSearchTextField(
+                              placeholder: 'Search by name',
                               onChanged: (name) {
                                 setState(() {
                                   _name = name;

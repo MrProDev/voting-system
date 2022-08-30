@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -59,8 +60,8 @@ class _CandidateProfileDetailsWidgetState
               children: [
                 Hero(
                   tag: widget.candidateUid,
-                  child: Image.network(
-                    widget.imageUrl,
+                  child: CachedNetworkImage(
+                    imageUrl: widget.imageUrl,
                     width: double.infinity,
                     alignment: Alignment.topCenter,
                     height: 350,
@@ -186,7 +187,6 @@ class _CandidateProfileDetailsWidgetState
                 final result = await voteApi.checkIfVoted(
                   userUid: FirebaseAuth.instance.currentUser!.uid,
                 );
-
 
                 if (result == true) {
                   _showAlertDialog(

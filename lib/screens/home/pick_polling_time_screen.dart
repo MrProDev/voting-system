@@ -19,7 +19,7 @@ class _PickPollingTimeScreenState extends State<PickPollingTimeScreen> {
   String _startTimeText = 'Start Time';
   String _endTimeText = 'End Time';
 
-  bool _isLoading = true;
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
