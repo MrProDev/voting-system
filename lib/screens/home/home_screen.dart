@@ -10,8 +10,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final usersProvider = Provider.of<UsersProvider>(context, listen: false);
-    if (usersProvider.getUserType() == 'admin') {
+    if (Provider.of<UsersProvider>(context, listen: true).userType == 'admin') {
       return CupertinoTabScaffold(
         tabBar: CupertinoTabBar(
           items: const <BottomNavigationBarItem>[

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -185,7 +186,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
       _loading = true;
     });
 
-    final result = await apply.checkIfCandidateExists();
+    final result = await apply.checkIfCandidateExists(uid: FirebaseAuth.instance.currentUser!.uid);
     if (result == true) {
       _showAlertDialog('You have already applied for a candidateship');
       setState(() {
@@ -200,7 +201,7 @@ class _ApplyCandidateScreenState extends State<ApplyCandidateScreen> {
       return;
     }
 
-    await apply.applyForCandidate(partyName: _partyName!, image: _image!, context: context);
+    await apply.applyForCandidate(partyName: _partyName!, image: _image!, context: context, uid: FirebaseAuth.instance.currentUser!.uid);
     setState(() {
       _loading = false;
     });

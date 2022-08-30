@@ -24,7 +24,10 @@ class ProfileTabWidget extends StatelessWidget {
             automaticallyImplyTitle: true,
           ),
           CupertinoSliverRefreshControl(
-            onRefresh: () async {},
+            onRefresh: () async {
+              await candidateProvider.getCurrentCandidate(context: context);
+              await userProvider.getCurrentUser(context: context);
+            },
           ),
           SliverFillRemaining(
             child: MediaQuery.removePadding(
@@ -171,7 +174,8 @@ class ProfileTabWidget extends StatelessWidget {
                       userProvider.currentUser!.constituency!,
                     ),
                   ),
-                  userProvider.getUserType() == 'candidate'
+                  Provider.of<UsersProvider>(context, listen: true).userType ==
+                          'candidate'
                       ? Column(
                           children: [
                             Container(
@@ -188,30 +192,33 @@ class ProfileTabWidget extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            Container(
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 16,
-                              ),
-                              margin: EdgeInsets.zero,
-                              decoration: BoxDecoration(
-                                color: candidateProvider
-                                        .currentCandidate!.isApproved!
-                                    ? CupertinoColors.systemGreen
-                                    : CupertinoColors.systemYellow,
-                              ),
-                              child: Text(
-                                candidateProvider.currentCandidate!.isApproved!
-                                    ? 'Approved'
-                                    : 'Pending',
-                              ),
-                            ),
+                            Consumer<CandidateProvider>(
+                                builder: (context, value, child) {
+                              return Container(
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 8,
+                                  horizontal: 16,
+                                ),
+                                margin: EdgeInsets.zero,
+                                decoration: BoxDecoration(
+                                  color: value.isApproved!
+                                      ? CupertinoColors.systemGreen
+                                      : CupertinoColors.systemYellow,
+                                ),
+                                child: Text(
+                                  value.isApproved! ? 'Approved' : 'Pending',
+                                ),
+                              );
+                            }),
                           ],
                         )
                       : const SizedBox(),
-                  userProvider.getUserType() == 'user' ||
-                          userProvider.getUserType() == 'candidate'
+                  Provider.of<UsersProvider>(context, listen: true).userType ==
+                              'user' ||
+                          Provider.of<UsersProvider>(context, listen: true)
+                                  .userType ==
+                              'candidate'
                       ? Container(
                           margin: const EdgeInsets.symmetric(
                             horizontal: 12,

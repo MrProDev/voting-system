@@ -9,19 +9,26 @@ class UsersProvider extends ChangeNotifier {
 
   UserData? _currentUser;
 
+  String? _constituency;
+  String? _userType;
+
   List<UserData>? get users => _users;
 
   List<UserData>? get pendingUsers =>
       _users!.where((user) => user.userType == 'candidate').toList();
 
   List<UserData>? get showUsers =>
-      _users!.where((user) => user.constituency == getConstituency()).toList();
+      _users!.where((user) => user.constituency == _constituency).toList();
 
   List<UserData>? get voteUsers => _users!
       .where((user) =>
-          user.constituency == getConstituency() &&
+          user.constituency == _constituency &&
           user.userType == 'candidate')
       .toList();
+
+  String get constituency => _constituency!;
+
+  String get userType => _userType!;
 
   void currentUserAsNull() {
     _currentUser = null;
@@ -39,8 +46,10 @@ class UsersProvider extends ChangeNotifier {
   }
 
   Future getCurrentUser({required BuildContext context}) async {
-    _currentUser =
-        await Provider.of<UserApi>(context, listen: false).getUserData(uid: FirebaseAuth.instance.currentUser!.uid);
+    _currentUser = await Provider.of<UserApi>(context, listen: false)
+        .getUserData(uid: FirebaseAuth.instance.currentUser!.uid);
+    _constituency = _currentUser!.constituency!;
+    _userType = _currentUser!.userType!;
     notifyListeners();
   }
 
@@ -48,13 +57,5 @@ class UsersProvider extends ChangeNotifier {
       {required BuildContext context, required UserData userData}) async {
     await Provider.of<UserApi>(context, listen: false)
         .setUserAsCandidate(userData: userData);
-  }
-
-  String getConstituency() {
-    return _currentUser!.constituency ?? '';
-  }
-
-  String getUserType() {
-    return _currentUser!.userType ?? '';
   }
 }

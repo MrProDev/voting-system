@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:voting_system/models/user_data.dart';
 
 class UserApi {
-  String getCurrentUid() => FirebaseAuth.instance.currentUser!.uid;
 
   Future<UserData?> getUserData({required String uid}) async {
     try {
@@ -32,12 +30,12 @@ class UserApi {
     }
   }
 
-  Future setUserAsApplied({required UserData? userData}) async {
+  Future setUserAsApplied({required UserData? userData, required String uid}) async {
     try {
       userData!.hasApplied = true;
       await FirebaseFirestore.instance
           .collection('users')
-          .doc(getCurrentUid())
+          .doc(uid)
           .set(
             userData.toJson(),
           );

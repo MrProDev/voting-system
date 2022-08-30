@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/services/vote/vote_api.dart';
@@ -183,20 +184,17 @@ class _CandidateProfileDetailsWidgetState
                 }
 
                 final result = await voteApi.checkIfVoted(
-                  userUid: widget.userUid,
+                  userUid: FirebaseAuth.instance.currentUser!.uid,
                 );
 
+
                 if (result == true) {
-                  _showAlertDialog('You have already casted your vote.\nVote cast can\'t be updated!');
+                  _showAlertDialog(
+                      'You have already casted your vote.\nVote cast can\'t be updated!');
                   setState(() {
                     _isLoading = false;
                   });
                   return;
-                } else {
-                  _showAlertDialog('An error occurred');
-                  setState(() {
-                    _isLoading = false;
-                  });
                 }
 
                 await voteApi.vote(
@@ -205,7 +203,10 @@ class _CandidateProfileDetailsWidgetState
                   candidateUid: widget.candidateUid,
                 );
 
-                await voteApi.voteDone(userUid: widget.userUid, context: context,);
+                await voteApi.voteDone(
+                  userUid: widget.userUid,
+                  context: context,
+                );
 
                 setState(() {
                   _isLoading = false;

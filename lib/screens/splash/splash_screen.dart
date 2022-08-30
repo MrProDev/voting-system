@@ -25,11 +25,34 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const CupertinoPageScaffold(
+    return CupertinoPageScaffold(
       child: Center(
-        child: Icon(
-          CupertinoIcons.hand_thumbsup_fill,
-          size: 128,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Icon(
+              CupertinoIcons.hand_thumbsup_fill,
+              size: 128,
+            ),
+            Text(
+              'Pakistan Online\nVoting System',
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: 40,
+                color: CupertinoDynamicColor.withBrightness(
+                  color: CupertinoColors.black,
+                  darkColor: CupertinoColors.white,
+                ),
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 64,
+            ),
+            CupertinoActivityIndicator(
+              radius: 16,
+            ),
+          ],
         ),
       ),
     );

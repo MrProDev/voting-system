@@ -12,9 +12,7 @@ class VoteTabWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final countdownProvider =
-        Provider.of<CountdownProvider>(context, listen: false);
-    final userProvider = Provider.of<UsersProvider>(context, listen: false);
+    final userProvider = Provider.of<UsersProvider>(context, listen: true);
     return CupertinoPageScaffold(
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -31,7 +29,7 @@ class VoteTabWidget extends StatelessWidget {
                     .collection('users')
                     .where(
                       'constituency',
-                      isEqualTo: userProvider.getConstituency(),
+                      isEqualTo: userProvider.constituency,
                     )
                     .where(
                       'userType',
@@ -66,7 +64,7 @@ class VoteTabWidget extends StatelessWidget {
                           .where(
                             'constituency',
                             isEqualTo:
-                                userProvider.getConstituency(),
+                                userProvider.constituency,
                           ).where(
                             'isApproved',
                             isEqualTo: true,
@@ -104,7 +102,7 @@ class VoteTabWidget extends StatelessWidget {
                               height: 10,
                             ),
                             itemBuilder: (context, index) => CandidateWidget(
-                              seconds: countdownProvider.duration.inSeconds,
+                              seconds: Provider.of<CountdownProvider>(context, listen: true).duration.inSeconds,
                               userUid: users![index].uid!,
                               candidateUid: candidatesData[index].uid!,
                               name: users[index].name!,

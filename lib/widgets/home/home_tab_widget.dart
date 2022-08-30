@@ -59,7 +59,9 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final usersProvider = Provider.of<UsersProvider>(context, listen: false);
+    final usersProvider = Provider.of<UsersProvider>(context, listen: true);
+    final countdownProvider =
+        Provider.of<CountdownProvider>(context, listen: false);
 
     return CupertinoPageScaffold(
       child: CustomScrollView(
@@ -70,8 +72,10 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
           ),
           CupertinoSliverRefreshControl(
             onRefresh: () async {
-              await Provider.of<CountdownProvider>(context, listen: false)
-                  .setDuration(context: context);
+              await countdownProvider.setDuration(context: context);
+              await usersProvider.getCurrentUser(context: context);
+              countdownProvider.timerAsNull();
+              countdownProvider.startTimer();
             },
           ),
           SliverFillRemaining(
@@ -133,76 +137,116 @@ class _HomeTabWidgetState extends State<HomeTabWidget> {
                       },
                     ),
                   ),
-                  usersProvider.getUserType() == 'admin'
-                      ? Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            onPressed: () => Navigator.pushNamed(
-                                context, PickPollingTimeScreen.route),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Text(
-                                  'Pick Polling Time',
+                  usersProvider.userType == 'admin'
+                      ? Column(
+                          children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: CupertinoButton.filled(
+                                padding: EdgeInsets.zero,
+                                onPressed: () => Navigator.pushNamed(
+                                    context, PickPollingTimeScreen.route),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: const [
+                                    Text(
+                                      'Pick Polling Time',
+                                      style: TextStyle(
+                                        color: CupertinoColors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: CupertinoButton.filled(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, ApproveCandidatesScreen.route);
+                                },
+                                child: const Text(
+                                  'Approve Candidates',
                                   style: TextStyle(
                                     color: CupertinoColors.white,
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
+                              ),
+                            )
+                          ],
                         )
                       : const SizedBox(),
                   const SizedBox(
                     height: 20,
                   ),
-                  usersProvider.getUserType() == 'candidate'
-                      ? Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, ShowUsersScreen.route);
-                            },
-                            child: const Text(
-                              'Show Users',
-                              style: TextStyle(
-                                color: CupertinoColors.white,
+                  usersProvider.userType == 'candidate'
+                      ? Column(
+                          children: [
+                            Container(
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 12),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: CupertinoButton.filled(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, ShowUsersScreen.route);
+                                },
+                                child: const Text(
+                                  'Show Users',
+                                  style: TextStyle(
+                                    color: CupertinoColors.white,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        )
-                      : const SizedBox(),
-                  usersProvider.getUserType() == 'admin'
-                      ? Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: CupertinoButton.filled(
-                            padding: EdgeInsets.zero,
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                  context, ApproveCandidatesScreen.route);
-                            },
-                            child: const Text(
-                              'Approve Candidates',
-                              style: TextStyle(
-                                color: CupertinoColors.white,
-                              ),
+                            const SizedBox(
+                              height: 20,
                             ),
-                          ),
+                            Consumer<CountdownProvider>(
+                              builder: (context, value, child) {
+                                return value.duration.inSeconds <= 0
+                                    ? Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 12),
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: CupertinoButton.filled(
+                                          padding: EdgeInsets.zero,
+                                          onPressed: () {},
+                                          child: const Text(
+                                            'Show Results',
+                                            style: TextStyle(
+                                              color: CupertinoColors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox();
+                              },
+                            ),
+                          ],
                         )
                       : const SizedBox(),
                 ],

@@ -29,15 +29,15 @@ class CountdownProvider extends ChangeNotifier {
     _timer = Timer.periodic(
       const Duration(seconds: 1),
       (_) {
-      final seconds = _duration!.inSeconds - 1;
+        final seconds = _duration!.inSeconds - 1;
         final hours = duration.inHours;
         if (hours >= 8) {
           _warningMessage = 'Polling is not started yet!';
+          _timer?.cancel();
         }
-        if (seconds <= 0) {
+        if (seconds < 0) {
           _warningMessage = 'Polling time is ended!';
-
-          _timer!.cancel();
+          _timer?.cancel();
         } else {
           _warningMessage = '';
           _duration = Duration(seconds: seconds);
