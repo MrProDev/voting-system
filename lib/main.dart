@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/providers/candidate_provider.dart';
+import 'package:voting_system/providers/loading_provider.dart';
 import 'package:voting_system/providers/users_provider.dart';
 import 'package:voting_system/screens/home/show_results_screen.dart';
 import 'package:voting_system/services/auth/forgot_password_api.dart';
@@ -81,6 +82,9 @@ class VotingSystem extends StatelessWidget {
         ),
         ChangeNotifierProvider<CandidateProvider>(
           create: (_) => CandidateProvider(),
+        ),
+        ChangeNotifierProvider<LoadingProvider>(
+          create: (_) => LoadingProvider(),
         ),
       ],
       child: CupertinoApp(

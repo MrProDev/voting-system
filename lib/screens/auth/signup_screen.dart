@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:voting_system/common/common_data.dart';
+import 'package:voting_system/providers/loading_provider.dart';
 import 'package:voting_system/services/auth/signup_auth_api.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -28,9 +29,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
-  // Loading state
-  bool _loading = false;
 
   String? _name;
   int _selectedConstituency = 0;
@@ -263,18 +261,64 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                 ),
-                child: CupertinoButton.filled(
-                  padding: EdgeInsets.zero,
-                  onPressed: _verifyCredentials,
-                  child: _loading
-                      ? const CupertinoActivityIndicator()
-                      : const Text(
-                          'Sign up',
-                          style: TextStyle(
-                            color: CupertinoColors.white,
+                child:
+                    Consumer<LoadingProvider>(builder: (context, value, child) {
+                  return CupertinoButton.filled(
+                    padding: EdgeInsets.zero,
+                    onPressed: () async {
+                      final isValid = _formKey.currentState!.validate();
+                      final signUpAuthApi =
+                          Provider.of<SignUpAuthApi>(context, listen: false);
+
+                      if (_passwordController.text !=
+                          _confirmPasswordController.text) {
+                        _showAlertDialog('Passwords don\'t match!');
+                        return;
+                      }
+
+                      if (isValid && image != null) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        _formKey.currentState!.save();
+                      } else {
+                        return;
+                      }
+
+                      value.yesLoading();
+
+                      User? user = await signUpAuthApi
+                          .createUserWithEmailAndPassword(_email!, _password!);
+
+                      if (user == null) {
+                        _showAlertDialog(
+                            'User with this email address already exists');
+                        value.noLoading();
+                        return;
+                      } else {
+                        final imageUrl = await signUpAuthApi
+                            .uploadProfilePicture(image: image!);
+                        await signUpAuthApi.createUser(
+                          name: _name!,
+                          constituency:
+                              CommonData.constituencies[_selectedConstituency],
+                          cnic: _cnic!,
+                          user: user,
+                          imageUrl: imageUrl!,
+                        );
+                      }
+
+                      if (!mounted) return;
+                      Navigator.pop(context);
+                    },
+                    child: value.loading
+                        ? const CupertinoActivityIndicator()
+                        : const Text(
+                            'Sign up',
+                            style: TextStyle(
+                              color: CupertinoColors.white,
+                            ),
                           ),
-                        ),
-                ),
+                  );
+                }),
               ),
               CupertinoButton(
                 child: const Text('Already have an account?'),
@@ -285,53 +329,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
-  }
-
-  void _verifyCredentials() async {
-    final isValid = _formKey.currentState!.validate();
-    final signUpAuthApi = Provider.of<SignUpAuthApi>(context, listen: false);
-
-    if (_passwordController.text != _confirmPasswordController.text) {
-      _showAlertDialog('Passwords don\'t match!');
-      return;
-    }
-
-    if (isValid && image != null) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      _formKey.currentState!.save();
-    } else {
-      return;
-    }
-
-    setState(() {
-      _loading = true;
-    });
-
-    User? user =
-        await signUpAuthApi.createUserWithEmailAndPassword(_email!, _password!);
-
-    if (user == null) {
-      _showAlertDialog('User with this email address already exists');
-      setState(() {
-        _loading = false;
-      });
-      return;
-    } else {
-      final imageUrl = await signUpAuthApi.uploadProfilePicture(image: image!);
-      await signUpAuthApi.createUser(
-        name: _name!,
-        constituency: CommonData.constituencies[_selectedConstituency],
-        cnic: _cnic!,
-        user: user,
-        imageUrl: imageUrl!,
-      );
-    }
-
-    setState(() {
-      _loading = false;
-    });
-    if (!mounted) return;
-    Navigator.pop(context);
   }
 
   void _showAlertDialog(String message) {

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:voting_system/providers/loading_provider.dart';
 import 'package:voting_system/services/auth/login_auth_api.dart';
 import 'package:voting_system/screens/auth/forgot_password_screen.dart';
 import 'package:voting_system/screens/auth/signup_screen.dart';
@@ -15,10 +16,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailRegex = RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$');
-
-  // Loading state
-  bool _loading = false;
-
+  
   String? _email;
   String? _password;
 
@@ -94,17 +92,42 @@ class _LoginScreenState extends State<LoginScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5),
               ),
-              child: CupertinoButton.filled(
-                padding: EdgeInsets.zero,
-                onPressed: _verifyCredentials,
-                child: _loading
-                    ? const CupertinoActivityIndicator()
-                    : const Text(
-                        'Sign in',
-                        style: TextStyle(
-                          color: CupertinoColors.white,
-                        ),
-                      ),
+              child: Consumer<LoadingProvider>(
+                builder: (context, value, child) {
+                  return CupertinoButton.filled(
+                    padding: EdgeInsets.zero,
+                    onPressed: () async {
+                      final isValid = _formKey.currentState!.validate();
+                      final loginAuthApi =
+                          Provider.of<LoginAuthApi>(context, listen: false);
+
+                      if (isValid) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        _formKey.currentState!.save();
+                      } else {
+                        return;
+                      }
+                      value.yesLoading();
+
+                      User? user = await loginAuthApi
+                          .signInWithEmailAndPassword(_email!, _password!);
+
+                      if (user == null) {
+                        _showAlertDialog();
+                      }
+
+                      value.noLoading();
+                    },
+                    child: value.loading
+                        ? const CupertinoActivityIndicator()
+                        : const Text(
+                            'Sign in',
+                            style: TextStyle(
+                              color: CupertinoColors.white,
+                            ),
+                          ),
+                  );
+                },
               ),
             ),
             CupertinoButton(
@@ -115,33 +138,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-  }
-
-  void _verifyCredentials() async {
-    final isValid = _formKey.currentState!.validate();
-    final loginAuthApi = Provider.of<LoginAuthApi>(context, listen: false);
-
-    if (isValid) {
-      FocusManager.instance.primaryFocus?.unfocus();
-      _formKey.currentState!.save();
-    } else {
-      return;
-    }
-
-    setState(() {
-      _loading = true;
-    });
-
-    User? user =
-        await loginAuthApi.signInWithEmailAndPassword(_email!, _password!);
-
-    if (user == null) {
-      _showAlertDialog();
-    }
-
-    setState(() {
-      _loading = false;
-    });
   }
 
   void _showAlertDialog() {
