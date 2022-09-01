@@ -27,7 +27,7 @@ import 'package:voting_system/screens/home/approve_candidates_screen.dart';
 import 'package:voting_system/screens/home/pick_polling_time_screen.dart';
 import 'package:voting_system/screens/home/show_users_screen.dart';
 import 'package:voting_system/screens/splash/splash_screen.dart';
-import 'package:voting_system/widgets/splash/splash_widget.dart';
+import 'package:voting_system/widgets/splash/loading_data_widget.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
